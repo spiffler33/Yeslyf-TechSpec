@@ -1084,7 +1084,12 @@ const steps = [
  {n:"P3",ph:0,spec:true,stage:"Pre-app \xb7 Pledge complete",title:"Pledge complete \u2014 you are a YesLifer",tags:[["free","Free"]],
   does:"The confirmation beat \u2014 \u201cYou are a YesLifer\u201d as the headline \u2014 then a single CTA into the app proper.",
   you:"Tap to continue into the app.",in:"\u2014",out:"Pledge badge unlocked in the community",
-  note:"Leads straight into Step 1 (the new master flow below) \u2014 the New User Flow spreadsheet (S4) takes over from here.",src:"Source \u2014 S2 A03 \xb7 S1 Chart 01"},
+  note:"Leads straight into the Splash Screen below — then Step 1 (Login). The New User Flow spreadsheet (S4) takes over from here.",src:"Source \u2014 S2 A03 \xb7 S1 Chart 01"},
+ {n:"S0",ph:0,stage:"System \u00b7 G01",title:"Splash Screen",img:"23-53-14.png",tags:[["free","Free"]],
+  does:"App-open splash — brand mark and a calm one-liner while the app boots. Auto-advances once initialisation completes.",
+  you:"Tap to begin, or let it auto-advance.",in:"—",out:"—",
+  note:"<span class='warn'>⚠</span> <b>Duration conflict (unresolved):</b> the Excel spec says “≤2s, no spinner”; the Boardmix master flow says “wait 5 seconds”. Resolve before build.",
+  src:"Source \u2014 S2 G01 \xb7 S7 Boardmix master flow row 1"},
  {n:1,ph:0,stage:"Step 1 · Login",title:"Login — email ID",img:"23-53-21.png",tags:[["free","Free"]],
   does:"Identity capture via email login; existing users sign in, with biometric available on return visits. A welcome popup (“Welcome to Yeslifers”) follows immediately.",
   you:"Enter email + name; existing users use biometric.",
@@ -2013,6 +2018,15 @@ document.addEventListener('click',e=>{
   if(e.target===sysModal||e.target.closest('[data-close]'))closeSys();
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSys();closeAdmin();}});
+
+/* ---------- window.storage polyfill (localStorage fallback) ---------- */
+if(!window.storage){
+  window.storage = {
+    get: async function(key){ try{ const v=localStorage.getItem(key); return v!==null?{value:v}:null; }catch(e){return null;} },
+    set: async function(key,val){ try{ localStorage.setItem(key,val); }catch(e){} },
+    delete: async function(key){ try{ localStorage.removeItem(key); }catch(e){} }
+  };
+}
 
 /* ---------- per-card meeting notes (persisted via window.storage) ---------- */
 function noteKey(id){ return 'note:'+id; }
