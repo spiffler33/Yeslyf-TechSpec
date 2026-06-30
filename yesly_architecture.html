@@ -1,0 +1,3848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yesly — Technical Architecture &amp; Flow Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink-deepest: #0d1a12;
+  --ink-deep: #1a2e1f;
+  --ink-mid: #2c3e2f;
+  --ink-soft: #4a5a4d;
+  --paper: #faf6ee;
+  --paper-warm: #f3eddd;
+  --paper-card: #fffcf3;
+  --gold: #b08a3e;
+  --gold-soft: #c8a85a;
+  --gold-pale: #e8d9a8;
+  --rule: #d8cfba;
+  --rule-soft: #e8e1cf;
+  --ink-body: #1f1f1f;
+  --warn: #8b4513;
+  --warn-bg: #f5e6d3;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink-body);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ============ SIDEBAR ============ */
+
+aside.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: var(--ink-deepest);
+  color: var(--paper-warm);
+  padding: 32px 24px 32px 32px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--ink-deep);
+}
+
+.sidebar-header {
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--ink-mid);
+}
+
+.sidebar-header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: -0.5px;
+  color: var(--gold-soft);
+  margin-bottom: 4px;
+  font-style: italic;
+}
+
+.sidebar-header .subtitle {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--paper-warm);
+  opacity: 0.7;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.sidebar-header .version {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--gold-pale);
+  opacity: 0.7;
+}
+
+nav.sidebar-nav {
+  font-size: 13px;
+}
+
+nav.sidebar-nav .nav-group {
+  margin-bottom: 24px;
+}
+
+nav.sidebar-nav .nav-group-label {
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+nav.sidebar-nav a {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0 6px 4px;
+  color: var(--paper-warm);
+  text-decoration: none;
+  font-size: 13.5px;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+  padding-left: 10px;
+  margin-left: -4px;
+  transition: all 0.15s ease;
+}
+
+nav.sidebar-nav a:hover {
+  color: var(--gold-soft);
+  border-left-color: var(--gold);
+}
+
+nav.sidebar-nav a.active {
+  color: var(--gold-soft);
+  border-left-color: var(--gold);
+  font-weight: 500;
+}
+
+nav.sidebar-nav a .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  font-weight: 500;
+  min-width: 18px;
+  flex-shrink: 0;
+}
+
+nav.sidebar-nav a.active .num,
+nav.sidebar-nav a:hover .num {
+  color: var(--gold-pale);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--ink-mid);
+  font-size: 11px;
+  color: var(--paper-warm);
+  opacity: 0.55;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ============ MAIN CONTENT ============ */
+
+main.content {
+  flex: 1;
+  padding: 56px 64px 96px 64px;
+  max-width: 1100px;
+}
+
+section.page {
+  display: none;
+}
+
+section.page.active {
+  display: block;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* page headers */
+
+.page-header {
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.page-header .eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.page-header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  font-size: 42px;
+  color: var(--ink-deep);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+.page-header .lede {
+  font-size: 17px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  font-style: italic;
+  max-width: 720px;
+}
+
+/* prose */
+
+main.content h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  font-size: 26px;
+  color: var(--ink-deep);
+  margin-top: 48px;
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
+}
+
+main.content h3 {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--ink-deep);
+  margin-top: 28px;
+  margin-bottom: 10px;
+  letter-spacing: 0.1px;
+}
+
+main.content h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 24px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+main.content p {
+  margin-bottom: 14px;
+  color: var(--ink-body);
+}
+
+main.content p strong,
+main.content li strong {
+  color: var(--ink-deep);
+  font-weight: 600;
+}
+
+main.content ul, main.content ol {
+  margin: 0 0 14px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+main.content ul li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+main.content ul li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+main.content ol {
+  counter-reset: list-counter;
+  padding-left: 0;
+}
+
+main.content ol li {
+  counter-increment: list-counter;
+  position: relative;
+  padding-left: 32px;
+  margin-bottom: 10px;
+}
+
+main.content ol li::before {
+  content: counter(list-counter, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* inline code */
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  background: var(--paper-warm);
+  padding: 1px 6px;
+  border-radius: 2px;
+  color: var(--ink-deep);
+  border: 1px solid var(--rule-soft);
+}
+
+/* ============ ASCII CHART BLOCKS ============ */
+
+pre.ascii-chart {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  line-height: 1.45;
+  background: var(--paper-card);
+  color: var(--ink-deep);
+  padding: 28px 32px;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--gold);
+  border-radius: 2px;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 24px 0;
+  box-shadow: 0 1px 0 var(--rule-soft);
+}
+
+pre.ascii-chart::-webkit-scrollbar {
+  height: 8px;
+}
+pre.ascii-chart::-webkit-scrollbar-track {
+  background: var(--paper-warm);
+}
+pre.ascii-chart::-webkit-scrollbar-thumb {
+  background: var(--gold-pale);
+  border-radius: 4px;
+}
+
+/* tables */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 14px;
+}
+
+table th {
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding: 10px 14px 10px 0;
+  border-bottom: 1.5px solid var(--ink-deep);
+  font-weight: 600;
+  vertical-align: bottom;
+}
+
+table td {
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+table td:last-child, table th:last-child {
+  padding-right: 0;
+}
+
+table tr:last-child td {
+  border-bottom: none;
+}
+
+/* callout boxes */
+
+.callout {
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--gold);
+  padding: 18px 24px;
+  margin: 20px 0;
+  border-radius: 2px;
+}
+
+.callout.warn {
+  background: var(--warn-bg);
+  border-left-color: var(--warn);
+}
+
+.callout-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.callout.warn .callout-label {
+  color: var(--warn);
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+/* confidence flags */
+
+.confidence {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0 4px;
+}
+
+.confidence.high { background: #d4e4cd; color: #2d4a25; }
+.confidence.mod { background: #e8d9a8; color: #6b5320; }
+.confidence.low { background: #f5d0c0; color: #6b3010; }
+
+/* chart page specific */
+
+.chart-meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+
+.chart-meta .category {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* notes section after charts */
+
+.notes-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px dashed var(--rule);
+}
+
+.notes-section h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+/* horizontal rule */
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  margin: 40px 0;
+}
+
+hr.ornament {
+  background: none;
+  height: 16px;
+  text-align: center;
+  margin: 48px 0;
+}
+
+hr.ornament::before {
+  content: "·  ·  ·";
+  color: var(--gold);
+  font-size: 16px;
+  letter-spacing: 8px;
+}
+
+/* utility */
+
+.muted { color: var(--ink-soft); }
+.gold { color: var(--gold); }
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 0.92em; }
+
+/* responsive */
+
+@media (max-width: 1100px) {
+  aside.sidebar { width: 240px; padding: 24px 16px 24px 20px; }
+  main.content { padding: 40px 36px 80px 36px; }
+  .page-header h1 { font-size: 34px; }
+}
+
+@media (max-width: 800px) {
+  body { flex-direction: column; }
+  aside.sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    padding: 20px;
+  }
+  main.content {
+    padding: 32px 20px 64px 20px;
+  }
+  .page-header h1 { font-size: 28px; }
+  pre.ascii-chart { font-size: 10.5px; padding: 16px; }
+}
+
+/* print */
+
+@media print {
+  body { background: white; }
+  aside.sidebar { display: none; }
+  main.content { padding: 24px; max-width: 100%; }
+  section.page { display: block !important; page-break-before: always; }
+  section.page:first-of-type { page-break-before: avoid; }
+  pre.ascii-chart {
+    background: white;
+    border: 1px solid #999;
+    font-size: 9px;
+    page-break-inside: avoid;
+  }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h1>Yesly</h1>
+    <div class="subtitle">Technical Architecture<br>&amp; Flow Reference</div>
+    <div class="version">v0.2 · DRAFT · 25 MAY 2026</div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <div class="nav-group">
+      <div class="nav-group-label">Overview</div>
+      <a href="#overview" data-target="overview" class="active"><span class="num">00</span>Architecture</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">User Journeys</div>
+      <a href="#chart-1" data-target="chart-1"><span class="num">01</span>Cold Funnel</a>
+      <a href="#chart-2" data-target="chart-2"><span class="num">02</span>Warm Funnel</a>
+      <a href="#chart-3" data-target="chart-3"><span class="num">03</span>Tier Progression</a>
+      <a href="#chart-4" data-target="chart-4"><span class="num">04</span>Subscribed Lifecycle</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">System Flows</div>
+      <a href="#chart-5" data-target="chart-5"><span class="num">05</span>Account Aggregator</a>
+      <a href="#chart-6" data-target="chart-6"><span class="num">06</span>Recommendation Pipeline</a>
+      <a href="#chart-7" data-target="chart-7"><span class="num">07</span>Order Placement</a>
+      <a href="#chart-8" data-target="chart-8"><span class="num">08</span>Subscription Billing</a>
+      <a href="#chart-9" data-target="chart-9"><span class="num">09</span>Data Model</a>
+      <a href="#chart-10" data-target="chart-10"><span class="num">10</span>Compliance Audit</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Integrations &amp; Admin</div>
+      <a href="#chart-11" data-target="chart-11"><span class="num">11</span>KYC Integration</a>
+      <a href="#chart-12" data-target="chart-12"><span class="num">12</span>DPDP &amp; Grievance</a>
+      <a href="#chart-13" data-target="chart-13"><span class="num">13</span>Internal Admin Console</a>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    Prepared for handover to development partner.<br>
+    Source of truth for v1 scope and flow.
+  </div>
+</aside>
+
+<main class="content">
+
+<!-- ============ OVERVIEW ============ -->
+
+<section id="overview" class="page active">
+
+  <div class="page-header">
+    <div class="eyebrow">Document 00 · Overview</div>
+    <h1>Architecture</h1>
+    <p class="lede">A broad technical architecture for Yesly — the mobile-first conscious money platform from House of Alpha. This is the source document for development partner scoping, quoting, and build.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">How to read this document</div>
+    <p>This document and the thirteen flowcharts that follow are a single integrated artefact. The architecture describes <em>what the system is</em>. The flowcharts describe <em>what the system does</em>. A development partner cannot quote against one without the other. Read this overview first, then the charts in any order — they are cross-referenced throughout.</p>
+  </div>
+
+  <h2>What Yesly Is</h2>
+
+  <ul>
+    <li>A <strong>mobile-first conscious money platform</strong> for Indian earners aged 25–45.</li>
+    <li>A <strong>financial planning and advisory funnel</strong> delivered through community, planning, recommendations, and human advisor handoff.</li>
+    <li>A <strong>four-tier monetised product</strong>: Free → Financial Plan (one-time) → Investment Plan (one-time) → Ongoing Subscription (monthly) → Human Advisory (off-app).</li>
+    <li>A <strong>read-consumer of users' financial data</strong> via Account Aggregator consent, with CAS and statement uploads as fallback.</li>
+    <li>A <strong>SEBI RIA-compliant advisory channel</strong> routing qualified users to House of Alpha advisors.</li>
+    <li>An <strong>execution-initiating platform</strong> that places trades on behalf of subscribed users via smallcase Gateway and BSE StAR MF. Yesly is not the broker of record — smallcase and BSE StAR are.</li>
+    <li>An <strong>internally-developed algorithmic core</strong>: asset allocation logic, rebalancing triggers, and (v2) idea generation are built in-house by the HoA engine team. The Investment Plan engine is owned internally, not by the development partner.</li>
+  </ul>
+
+  <h2>What Yesly Is Not</h2>
+
+  <ul>
+    <li>Not a broker. Order routing happens via licensed third parties (smallcase, BSE StAR).</li>
+    <li>Not a wallet or custodian. Yesly does not hold or transfer user money beyond its own subscription billing.</li>
+    <li>Not a card issuer.</li>
+    <li>Not a lending platform.</li>
+    <li>Not on UPI peer-to-peer rails. UPI is used only as a subscription mandate channel via the payment gateway.</li>
+    <li>Not a market-data terminal. Live prices and quotes are not a feature.</li>
+    <li>Not PCI-DSS in scope. Card data is fully tokenised at gateway and never touches Yesly servers.</li>
+  </ul>
+
+  <div class="callout warn">
+    <div class="callout-label">Cost implication for partner</div>
+    <p>This scope eliminates approximately 40–60% of a generic Indian-fintech reference architecture. The development partner must quote against this scope, not against a generic UPI-rails-and-cards diagram. Any line item in their quote that assumes wallet, ledger, card, or UPI P2P infrastructure should be challenged.</p>
+  </div>
+
+  <h2>The Four Tiers</h2>
+
+  <table>
+    <thead>
+      <tr><th style="width:14%">Tier</th><th style="width:28%">Product</th><th style="width:18%">Pricing model</th><th style="width:40%">What it includes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Free</strong></td>
+        <td>Community + Sample</td>
+        <td>—</td>
+        <td>YesLifers community access, sample plan PDF for archetype, persona reveal, Clarity &amp; Blindspots (limited)</td>
+      </tr>
+      <tr>
+        <td><strong>Tier 1</strong></td>
+        <td>Financial Plan</td>
+        <td>One-time, low (~Rs 249 indicative)</td>
+        <td>Comprehensive personal financial plan (household-aware, goals, life events, budget, hell-yes decisions, asset allocation framework, risk profile)</td>
+      </tr>
+      <tr>
+        <td><strong>Tier 2</strong></td>
+        <td>Investment Plan</td>
+        <td>One-time, premium</td>
+        <td>Portfolio-specific allocation against actual holdings. Hard-gated on portfolio data (AA, CAS PDF, statement upload, or manual)</td>
+      </tr>
+      <tr>
+        <td><strong>Tier 3</strong></td>
+        <td>Ongoing Subscription</td>
+        <td>Monthly recurring</td>
+        <td>Live dashboard, drift detection, rebalancing alerts, curated idea notifications, in-app execution (v1.5; deep-link in v1), monthly summaries, check-ins</td>
+      </tr>
+      <tr>
+        <td><strong>Tier 4</strong></td>
+        <td>Human Advisory</td>
+        <td>Off-app pricing</td>
+        <td>Direct planner conversation outside the app. App provides context window for advisor and check-in surface for user. HoA-internal opt-in only</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>System Context — Seven External Integrations</h2>
+
+  <p>The seven external systems Yesly talks to. Each is a line item that the development partner must price separately.</p>
+
+  <pre class="ascii-chart">                       +--------------------+
+                       |    APP STORES      |
+                       | (Apple, Google)    |
+                       +---------+----------+
+                                 | (distribution)
+                                 v
++-------------+          +-----------------+          +-------------------+
+|   END USER  | &lt;------&gt; |                 | &lt;------&gt; | ACCOUNT           |
+|  (Indian    |  mobile  |                 |  read    | AGGREGATOR        |
+|  earner     |   app    |     YESLY       |  consent | (Setu / OneMoney  |
+|  25-45)     |          |   (the app)     |          |  / CAMSFinServ)   |
++-------------+          |                 |          +-------------------+
+                         |                 |
++-------------+          |                 |          +-------------------+
+|   HOUSE OF  | &lt;------&gt; |                 | &lt;------&gt; | KYC VENDOR        |
+|   ALPHA     |  console |                 |          | (Digio / IDfy)    |
+|   ADVISORS  |          |                 |          | Tier 2+ trigger   |
++-------------+          |                 |          +-------------------+
+                         |                 |
+                         |                 |          +-------------------+
+                         |                 | &lt;------&gt; | BROKER GATEWAYS   |
+                         |                 |          | smallcase Gateway |
+                         |                 |          | BSE StAR MF       |
+                         |                 |          | (v1: deep-link;   |
+                         |                 |          |  v1.5: in-app)    |
+                         |                 |          +-------------------+
+                         |                 |
+                         |                 |          +-------------------+
+                         |                 | &lt;------&gt; | PAYMENT GATEWAY   |
+                         |                 |          | (Razorpay)        |
+                         |                 |          | one-time + sub    |
+                         |                 |          +-------------------+
+                         |                 |
+                         |                 |          +-------------------+
+                         |                 | &lt;------&gt; | NOTIFICATION      |
+                         |                 |          | CHANNELS          |
+                         |                 |          | Expo Push         |
+                         |                 |          | Amazon SES email  |
+                         |                 |          | WhatsApp BSP      |
+                         |                 |          +-------------------+
+                         +--------+--------+
+                                  |
+                                  | analytics + observability
+                                  v
+                         +-----------------+
+                         | Mixpanel        |
+                         | Sentry          |
+                         +-----------------+
+  </pre>
+
+  <h2>Internal Containers — What Yesly Is Made Of</h2>
+
+  <p>Eight independently-deployable pieces. Containers 3–8 sit on AWS infrastructure in the Mumbai region (ap-south-1) for DPDP data residency. Yesly's stack is distinct from YesLifers community and the GTM cockpit (which run on Supabase); migration of YesLifers onto a unified stack is a separate decision not in v1 scope.</p>
+
+  <table>
+    <thead>
+      <tr><th style="width:6%">#</th><th style="width:24%">Container</th><th style="width:30%">What it does</th><th style="width:24%">Tech</th><th style="width:16%">Owner</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Mobile App</td><td>All user-facing functionality</td><td>React Native via Expo</td><td>Partner</td></tr>
+      <tr><td>2</td><td>Marketing Web</td><td>Landing, SEO, blog</td><td>React Vite on Vercel</td><td>Partner</td></tr>
+      <tr><td>3</td><td>API Backend</td><td>Auth, business logic, integrations, webhooks</td><td>Python (FastAPI) preferred; Node.js acceptable</td><td>Partner</td></tr>
+      <tr><td>4</td><td>Financial Planning Engine</td><td>Plan generation, asset allocation, drift detection, rebalancing logic</td><td>Python (NWGC-derived, internal)</td><td><strong>Internal (HoA)</strong></td></tr>
+      <tr><td>5</td><td>Notification Dispatcher</td><td>Fans out push, email, WhatsApp</td><td>Async worker (Celery or BullMQ)</td><td>Partner</td></tr>
+      <tr><td>6</td><td>Advisor Console (lightweight)</td><td>Read-only user state + post-meeting notes capture for Tier 4 advisors</td><td>React (web), role-gated</td><td>Partner</td></tr>
+      <tr><td>7</td><td>Internal Admin Console</td><td>Seven operational surfaces — see Chart 13</td><td>React (web), role-gated</td><td>Partner</td></tr>
+      <tr><td>8</td><td>Database + Storage</td><td>Single source of truth</td><td>AWS RDS Postgres (Mumbai) + AWS S3</td><td>Partner-built; new for Yesly</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-label">Critical scope split</div>
+    <p>Container 4 (the Financial Planning Engine) is built and maintained by the internal HoA engine team. The development partner builds an API wrapper around it but does not build the engine itself. This split must be explicit in the partner contract. Without it, the partner will scope engine work into their quote — billing for work the internal team is already doing.</p>
+  </div>
+
+  <h2>Tech Stack — With Reasoning</h2>
+
+  <p>These are constraints handed to the partner, not options they may revisit.</p>
+
+  <table>
+    <thead>
+      <tr><th style="width:28%">Layer</th><th style="width:30%">Choice</th><th>Why this and not something else</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Mobile</td><td>React Native (Expo) via EAS Build</td><td>Shared codebase with YesLifers community. Monorepo path open.</td></tr>
+      <tr><td>Web</td><td>React (Vite) on Vercel</td><td>Existing pattern across all HoA properties.</td></tr>
+      <tr><td>API backend</td><td>Python (FastAPI) preferred; Node.js fallback</td><td>Matches the engine's language; eliminates an internal language boundary.</td></tr>
+      <tr><td>Database</td><td>AWS RDS Postgres (Mumbai, ap-south-1)</td><td>Canonical Indian-fintech stack. Mumbai region satisfies DPDP residency. Familiar to SEBI compliance reviewers. YesLifers community migration from Supabase to be sequenced separately.</td></tr>
+      <tr><td>Auth</td><td>AWS Cognito (email OTP + social)</td><td>Native AWS integration. Indian fintech default.</td></tr>
+      <tr><td>Object storage</td><td>AWS S3 (Mumbai)</td><td>Same region as RDS. Field-level encryption for KYC documents.</td></tr>
+      <tr><td>Push</td><td>Expo Push (wraps FCM + APNs)</td><td>Already used in YesLifers.</td></tr>
+      <tr><td>Email</td><td>Amazon SES (Mumbai endpoint)</td><td>Native AWS integration. Cheapest at scale. India-resident.</td></tr>
+      <tr><td>WhatsApp</td><td>AiSensy / Gupshup / Wati (decision deferred)</td><td>WABA-approved partners. Template costs vary.</td></tr>
+      <tr><td>Account Aggregator</td><td>Setu / Anumati / OneMoney / CAMSFinServ (deferred)</td><td>All four are licensed AAs. Vendor selection is a separate evaluation.</td></tr>
+      <tr><td>KYC</td><td>Digio / IDfy / Hyperverge (deferred)</td><td>PAN + Aadhaar + bank verification with API access.</td></tr>
+      <tr><td>Payment gateway</td><td>Razorpay (Cashfree alternative)</td><td>One-time + Subscriptions. PCI handled vendor-side.</td></tr>
+      <tr><td>Brokers</td><td>smallcase Gateway + BSE StAR MF</td><td>Equity / ETF baskets via smallcase; mutual funds via StAR.</td></tr>
+      <tr><td>Analytics</td><td>Mixpanel</td><td>Existing. Continues the funnel from landing.</td></tr>
+      <tr><td>Observability</td><td>Sentry</td><td>Existing.</td></tr>
+      <tr><td>CI/CD</td><td>GitHub Actions</td><td>Existing repository pattern.</td></tr>
+      <tr><td>Hosting (web)</td><td>Vercel</td><td>Existing.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Data Categories — What Is Stored and Why It Matters</h2>
+
+  <p>The database contains four categories of data, each with different sensitivity, retention, and access rules.</p>
+
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Examples</th><th>Retention</th><th>Storage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Identity + auth</td><td>Email, phone, password hash</td><td>Account lifetime</td><td>AWS Cognito</td></tr>
+      <tr><td>Profile + onboarding</td><td>Name, persona, archetype, risk profile</td><td>Account lifetime</td><td>RDS Postgres</td></tr>
+      <tr><td>Financial profile (HIGH PII)</td><td>Income, assets, liabilities, goals, holdings</td><td>5–7 yrs per SEBI RIA</td><td>RDS Postgres, field-encrypted</td></tr>
+      <tr><td>KYC documents (CRITICAL PII)</td><td>PAN, Aadhaar, bank statements, CAS</td><td>Per regulation</td><td>S3, encrypted, restricted ACL</td></tr>
+      <tr><td>Plan outputs + advice</td><td>Generated plans, recommendations, advisor notes</td><td>5 yrs from end of relationship</td><td>RDS Postgres + S3 (PDFs)</td></tr>
+      <tr><td>Audit log (immutable)</td><td>Every advice event, every user acceptance, every order</td><td>5+ yrs, append-only</td><td>RDS Postgres (append-only table, role-restricted writes)</td></tr>
+      <tr><td>Analytics events</td><td>Funnel events, screen views</td><td>13 months</td><td>Mixpanel (pseudonymised)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Compliance Posture</h2>
+
+  <p>Yesly operates as a digital channel for a SEBI-registered Investment Adviser (House of Alpha). The architecture must:</p>
+
+  <ul>
+    <li>Enforce the SEBI RIA advertisement code (no return promises, no testimonials, mandatory disclosures shown and logged).</li>
+    <li>Maintain immutable audit logs of every advice-bearing interaction for five years from the end of the client relationship.</li>
+    <li>Support DPDP Act 2023 data subject rights — access, correction, erasure — within stipulated timelines.</li>
+    <li>Resolve the SEBI-vs-DPDP retention conflict by <em>anonymising</em> data on erasure requests rather than deleting it (audit and advisory records retained in anonymised form).</li>
+    <li>Store all personal data in Indian regions (ap-south-1).</li>
+    <li>Delegate KYC to a licensed third-party vendor, triggered at Tier 2 entry (Investment Plan).</li>
+    <li>Operate under VAPT clearance before launch and annually thereafter.</li>
+  </ul>
+
+  <p>This is the entire compliance section at this zoom level. Deeper detail belongs in a separate compliance addendum.</p>
+
+  <h2>Environments</h2>
+
+  <table>
+    <thead>
+      <tr><th>Environment</th><th>Purpose</th><th>Database</th><th>Mobile distribution</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Dev</td><td>Developer local + CI</td><td>Local Postgres / RDS dev instance</td><td>Local Expo Go</td></tr>
+      <tr><td>Staging</td><td>Internal QA, advisor UAT, compliance review</td><td>Separate RDS instance, anonymised seed</td><td>TestFlight + Play Internal</td></tr>
+      <tr><td>Production</td><td>Real users</td><td>RDS Postgres production (Mumbai), multi-AZ</td><td>App Store + Play Store</td></tr>
+    </tbody>
+  </table>
+
+  <p>The partner ships through this pipeline. They do not get their own staging environment that no one else can see.</p>
+
+  <h2>Explicit Out-of-Scope for v1</h2>
+
+  <p>Naming these explicitly kills scope creep. Each item has been considered and deferred. The partner does not re-introduce them.</p>
+
+  <ul>
+    <li>In-app order execution (deferred to v1.5; deep-link in v1)</li>
+    <li>Full algorithmic idea generation (curated-by-human in v1; algorithmic in v2)</li>
+    <li>UPI peer-to-peer payments</li>
+    <li>Card issuance</li>
+    <li>Lending or BNPL</li>
+    <li>AI chatbot / generative advisor</li>
+    <li>Voice interaction</li>
+    <li>Tax filing</li>
+    <li>Will and estate planning</li>
+    <li>Insurance comparison or purchase</li>
+    <li>Real-time market data feed</li>
+    <li>Tablet or desktop native apps</li>
+    <li>Multi-language beyond English</li>
+    <li>Offline mode</li>
+  </ul>
+
+  <h2>Open Decisions</h2>
+
+  <p>Each is a fork that materially affects the partner's quote. To be resolved before quote-locking.</p>
+
+  <table>
+    <thead>
+      <tr><th style="width:6%">#</th><th style="width:34%">Decision</th><th style="width:22%">Owner</th><th>Why it matters</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Account Aggregator vendor (Setu / Anumati / OneMoney / CAMSFinServ)</td><td>HoA + technical</td><td>Pricing varies 3–5x. Integration effort similar.</td></tr>
+      <tr><td>2</td><td>KYC vendor (Digio / IDfy / Hyperverge)</td><td>HoA + compliance</td><td>Cost per verification varies. Decide volume forecast first.</td></tr>
+      <tr><td>3</td><td>WhatsApp BSP (AiSensy / Gupshup / Wati)</td><td>Marketing + technical</td><td>Template costs vary. AiSensy cheapest entry; Gupshup scales.</td></tr>
+      <tr><td>4</td><td>API backend language (Python FastAPI vs Node.js)</td><td>Engineering</td><td>Python preferred; Node.js only if partner strongly resists.</td></tr>
+      <tr><td>5</td><td>KYC trigger tier (Tier 1 vs Tier 2)</td><td>Compliance</td><td>Conservative reading triggers KYC at Tier 1; aggressive at Tier 2. Compliance to adjudicate.</td></tr>
+      <tr><td>6</td><td>Pricing — Financial Plan, Investment Plan, Subscription</td><td>Commercial</td><td>Affects conversion modelling. Tier 1 indicative ~Rs 249.</td></tr>
+      <tr><td>7</td><td>Subscription model — monthly only, or annual option</td><td>Commercial</td><td>Drives gateway complexity and dunning design.</td></tr>
+      <tr><td>8</td><td>Advisor Console — separate web app vs new route in yeslifers-web</td><td>Engineering</td><td>Reusing existing app halves surface area.</td></tr>
+      <tr><td>9</td><td>Tier 4 scheduling integration (Calendly / Cal.com / manual)</td><td>HoA operations</td><td>Determines integration scope for Chart 4 escalation path.</td></tr>
+      <tr><td>10</td><td>Refund window and policy (7d / 14d / 30d)</td><td>Commercial + legal</td><td>Drives downgrade and refund UI surfaces.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>How to Use This Document With a Partner</h2>
+
+  <ol>
+    <li><strong>Quote against this scope, not against a generic fintech reference.</strong> If the partner wants to challenge a scoping decision, they justify it in writing.</li>
+    <li><strong>Quote container-by-container, not lump-sum.</strong> Force separate line items for each of Containers 1, 2, 3, 5, 6, 7. Container 4 is internal and not in the partner quote.</li>
+    <li><strong>Quote integrations separately.</strong> Each of the seven external integrations is its own line item. AA and broker integration are the heaviest.</li>
+    <li><strong>Quote staging, DevOps, and handover separately.</strong> These are routinely under-scoped.</li>
+    <li><strong>Quote the Internal Admin Console (Chart 13) seriously.</strong> Seven surfaces, four roles. Often dismissed as "just CRUD." It is not.</li>
+  </ol>
+
+  <p>A quote returned as a single number with no breakdown is not a real quote. Send it back.</p>
+
+  <h2>What This Document Is Not</h2>
+
+  <p>This is a broad architecture at the right zoom level for partner engagement. It deliberately omits:</p>
+
+  <ul>
+    <li>Component-level diagrams (one zoom deeper)</li>
+    <li>API contracts or OpenAPI specifications</li>
+    <li>Detailed database schemas (only categories shown; Chart 9 shows entity structure)</li>
+    <li>Detailed sequence diagrams for every flow (Charts 5–8 cover the major flows)</li>
+    <li>Detailed threat models</li>
+    <li>Detailed SEBI compliance mapping</li>
+    <li>Load testing requirements with specific numbers</li>
+    <li>Cost estimates</li>
+  </ul>
+
+  <p>Each of those is a separate document produced once this overview and the thirteen charts are reviewed and locked.</p>
+
+  <hr class="ornament">
+
+  <p class="muted" style="text-align: center; font-style: italic; font-size: 14px;">The flowcharts begin overleaf.</p>
+
+</section>
+
+<!-- ============ CHART 1: COLD FUNNEL ============ -->
+
+<section id="chart-1" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 01 · User Journey</div>
+    <h1>New User → First Plan</h1>
+    <p class="lede">The cold funnel. User has never heard of Yesly. Lands via marketing or referral. Has not joined YesLifers community.</p>
+  </div>
+
+  <pre class="ascii-chart">(Marketing / social / SEO / referral / partner)
+                |
+                v
+        [Landing page]
+                |
+                v
+    &lt;interested?&gt; --NO--&gt; (exit, retarget)
+                |
+                YES
+                v
+        [Email/phone signup]
+                |
+                v
+        (OTP verify)
+                |
+                v
+   ==============================
+   |  COMMUNITY-FIRST ON-RAMP   |
+   ==============================
+                |
+                v
+        [Welcome screen]
+        "Before we plan, meet the tribe"
+                |
+                v
+        [YesLifers Pledge — optional]
+                |
+                v
+    &lt;accept pledge?&gt;
+        |                  |
+        YES                NO
+        |                  |
+        v                  v
+   (pledge_taken      (pledge_taken
+    flag = TRUE)       flag = FALSE,
+        |             no exit, proceed)
+        |                  |
+        +--------+---------+
+                 |
+                 v
+        [Community access granted]
+        - Daily prompt
+        - Today / The Road / Decisions
+        - Pledge badge shown only if accepted
+                |
+                v
+        [Light engagement loop, 1-3 sessions]
+                |
+                v
+   ==============================
+   |  FINANCIAL ONBOARDING      |
+   ==============================
+                |
+                v
+        [Three life-stage questions]
+                |
+                v
+        [Persona / archetype reveal]
+                |
+                v
+        [Avatar creation]
+                |
+                v
+        [Sample plan PDF preview]
+        (free, demo plan for the archetype)
+                |
+                v
+    &lt;wants their own plan?&gt; --NO--&gt; (stay free, nurture)
+                |
+                YES
+                v
+   ==============================
+   |  DATA COLLECTION (Tier 1)  |
+   ==============================
+                |
+                v
+        [Household setup]
+                |
+                v
+        [Income + expenses]
+                |
+                v
+        [Assets + liabilities — manual high-level]
+        (no AA at this stage; user enters
+         balances themselves)
+                |
+                v
+        [Goals collection]
+                |
+                v
+        [Risk profile questionnaire]
+        (SEBI-mandated suitability)
+                |
+                v
+        [Life Events module]
+                |
+                v
+        [Budget module]
+                |
+                v
+        (System: clarity + blindspots computed)
+                |
+                v
+        [Clarity &amp; Blindspots screen]
+                |
+                v
+   ==============================
+   | PAYWALL 1 — FINANCIAL PLAN |
+   ==============================
+                |
+                v
+        [Plan preview, watermarked]
+        - 20+ page document
+        - Goal mapping
+        - Life events impact
+        - Budget guidance
+        - Asset allocation framework (generic)
+        - Hell Yes decisions
+                |
+                v
+        [$ PAYWALL — Financial Plan]
+        (cheap entry ~Rs 249; heavy deliverable)
+                |
+                v
+    &lt;pays?&gt; --NO--&gt; (free user, drip nurture)
+                |
+                YES
+                v
+        (Razorpay one-time checkout)
+                |
+                v
+        (Engine: Financial Plan generation)
+                |
+                v
+        [Financial Plan delivered]
+        - PDF download
+        - In-app view
+        - Email copy
+                |
+                v
+   ==============================
+   | PRE-PAYWALL 2 — DATA GATE  |
+   ==============================
+                |
+                v
+        [Investment Plan teaser]
+        "Get a portfolio-specific plan based on
+         your actual holdings"
+                |
+                v
+    &lt;interested?&gt; --NO--&gt; (Financial Plan user,
+                           periodic nurture)
+                |
+                YES
+                v
+   ==============================
+   | PORTFOLIO DATA REQUIRED    |
+   |   (hard gate — pick one)   |
+   ==============================
+                |
+                v
+        [Choose data source]
+        Option A: Account Aggregator (recommended)
+        Option B: CAS PDF upload (NSDL / CAMS)
+        Option C: Bank / credit card statement upload
+        Option D: Manual entry (last resort)
+                |
+        +-------+-------+-------+-------+
+        |       |       |       |
+        v       v       v       v
+   [Option A] [Option B] [Option C] [Option D]
+   AA flow    CAS PDF    Statement  Manual entry
+              parses     upload     (ISIN, qty,
+              demats +   parses     bank balance,
+              MFs        bank +     deposits)
+                         card txns
+        |       |       |       |
+        +-------+-------+-------+
+                |
+                v
+        (System: portfolio data parsed,
+         validated, normalised,
+         stored encrypted in Postgres)
+                |
+                v
+        [Portfolio confirmation screen]
+        "Here's what we found, confirm"
+                |
+                v
+    &lt;user confirms?&gt; --NO--&gt; (correct / retry)
+                |
+                YES
+                v
+   ==============================
+   | PAYWALL 2 — INVESTMENT PLAN|
+   ==============================
+                |
+                v
+        [Investment Plan preview, watermarked]
+        - Current asset allocation
+        - Target asset allocation
+        - Gap analysis
+        - Specific rebalancing recommendations
+        - Action report
+                |
+                v
+        [$ PAYWALL — Investment Plan]
+        (one-time, materially higher than
+         Financial Plan; "not cheap")
+                |
+                v
+    &lt;pays?&gt; --NO--&gt; (Financial Plan user with
+                     portfolio data captured;
+                     nurture toward conversion)
+                |
+                YES
+                v
+        (Razorpay one-time checkout)
+                |
+                v
+        (Engine: Investment Plan computed
+         against actual holdings)
+                |
+                v
+        [Investment Plan delivered]
+                |
+                v
+   ==============================
+   | PAYWALL 3 — ONGOING SUB    |
+   ==============================
+                |
+                v
+        [Subscription teaser]
+        "Stay on track — live tracking,
+         rebalancing alerts, new ideas,
+         and check-ins"
+                |
+                v
+        [$ PAYWALL — Monthly Subscription]
+                |
+                v
+    &lt;subscribes?&gt; --NO--&gt; (Investment Plan user,
+                           periodic reminders)
+                |
+                YES
+                v
+        (Razorpay Subscription with recurring
+         debit mandate)
+                |
+                v
+        [Onboarded to live app]
+        - Dashboard active
+        - Notifications enabled
+        - First rebalancing check scheduled
+                |
+                v
+    (--&gt; see Chart 4: Subscribed Lifecycle)
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li><strong>Pledge mechanic.</strong> Optional, not a gate. The <code>pledge_taken</code> flag drives a visible badge inside the community. Users who decline can pledge later.</li>
+      <li><strong>Paywall sequence.</strong> Financial Plan (cheap entry, heavy doc) → Investment Plan (AA-gated) → Ongoing Subscription. Three distinct paywall events.</li>
+      <li><strong>Portfolio data gate.</strong> Four options — AA, CAS PDF, bank/card statement upload, manual entry. AA is recommended; manual entry is the user-discouraged fallback.</li>
+      <li><strong>Engine does two distinct jobs.</strong> Tier 1: comprehensive plan from user-entered data. Tier 2: portfolio-specific allocation against actual holdings.</li>
+      <li><strong>Risk profile is part of Tier 1.</strong> SEBI requires suitability before any specific investment recommendation.</li>
+    </ul>
+    <h4>Confidence flags</h4>
+    <p>AA path: <span class="confidence high">high</span> · CAS PDF parsing: <span class="confidence mod">moderate</span> (NSDL CAS covers NSDL + CDSL + most MFs; bank balances not included) · Bank/card statement parsing: <span class="confidence mod">moderate</span> (PDF formats vary across banks; OCR may be needed) · Manual entry: <span class="confidence low">low</span> (functionally possible but UX-heavy; users will abandon).</p>
+  </div>
+
+</section>
+
+<!-- ============ CHART 2: WARM FUNNEL ============ -->
+
+<section id="chart-2" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 02 · User Journey</div>
+    <h1>YesLifers Member → First Plan</h1>
+    <p class="lede">The warm funnel. User is already in YesLifers community. Has built affinity. Now graduating into Yesly's financial layer.</p>
+  </div>
+
+  <pre class="ascii-chart">(Already in YesLifers community)
+                |
+                v
+        [YesLifers community surface]
+                |
+                v
+   ==============================
+   |  TRIGGER MOMENTS           |
+   ==============================
+                |
+                v
+        Triggered by ANY of:
+        - Founder-led nudge
+        - "Get your plan" CTA
+        - Marathon / event participation
+        - Cohort campaign
+        - Decision thread "I want to plan"
+                |
+                v
+        [Yesly intro screen, in-context]
+                |
+                v
+    &lt;interested?&gt; --NO--&gt; (return to community)
+                |
+                YES
+                v
+   ==============================
+   |  CONTEXT INHERITED         |
+   ==============================
+                |
+                v
+        (System inherits from community profile:)
+        - Identity verified (already logged in)
+        - Email confirmed
+        - Display name, avatar
+        - Pledge status (taken or not, either OK)
+                |
+                v
+        [Welcome — community on-ramp skipped]
+                |
+                v
+   ==============================
+   |  FINANCIAL ONBOARDING      |
+   ==============================
+                |
+                v
+        [Three life-stage questions]
+                |
+                v
+        [Persona / archetype reveal]
+        (skip avatar if already set in community)
+                |
+                v
+        [Sample plan PDF preview]
+                |
+                v
+    &lt;wants their own plan?&gt; --NO--&gt; (return to community)
+                |
+                YES
+                v
+   ==============================
+   |  DATA COLLECTION (Tier 1)  |
+   ==============================
+                |
+                v
+        [Household setup]
+                |
+                v
+        [Income + expenses]
+                |
+                v
+        [Assets + liabilities — manual]
+                |
+                v
+        [Goals collection]
+                |
+                v
+        [Risk profile questionnaire]
+                |
+                v
+        [Life Events module]
+                |
+                v
+        [Budget module]
+                |
+                v
+        [Clarity &amp; Blindspots screen]
+                |
+                v
+   ==============================
+   | PAYWALL 1 — FINANCIAL PLAN |
+   ==============================
+                |
+                v
+        [$ PAYWALL — Financial Plan]
+                |
+                v
+    &lt;pays?&gt; --NO--&gt; (free user, community member)
+                |
+                YES
+                v
+        [Financial Plan delivered]
+                |
+                v
+   ==============================
+   | PRE-PAYWALL 2 — DATA GATE  |
+   ==============================
+                |
+                v
+        [Investment Plan teaser]
+                |
+                v
+    &lt;interested?&gt; --NO--&gt; (nurture)
+                |
+                YES
+                v
+        [Choose data source]
+        - AA / CAS PDF / Statement upload / Manual
+                |
+                v
+        (Portfolio data captured)
+                |
+                v
+   ==============================
+   | PAYWALL 2 — INVESTMENT PLAN|
+   ==============================
+                |
+                v
+        [$ PAYWALL — Investment Plan]
+                |
+                v
+    &lt;pays?&gt; --NO--&gt; (Financial Plan user)
+                |
+                YES
+                v
+        [Investment Plan delivered]
+                |
+                v
+   ==============================
+   | PAYWALL 3 — ONGOING SUB    |
+   ==============================
+                |
+                v
+        [$ PAYWALL — Monthly Subscription]
+                |
+                v
+    &lt;subscribes?&gt; --NO--&gt; (Investment Plan user)
+                |
+                YES
+                v
+        (Razorpay Subscription created)
+                |
+                v
+        [Onboarded to live app]
+                |
+                v
+    (--&gt; see Chart 4: Subscribed Lifecycle)
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>Warm user skips: pledge prompt (already handled in community), avatar creation (if done), welcome on-ramp. Estimated 4–7 fewer screens than cold funnel.</li>
+      <li>Identity, email, pledge status inherited from the shared auth + profile layer between YesLifers and Yesly. (Note: YesLifers is on Supabase, Yesly on AWS Cognito — the inherited identity is propagated via a cross-system user mapping during the warm-funnel transition. This bridging logic is part of v1 scope.)</li>
+      <li>Paywall sequence identical to cold funnel from Paywall 1 onward.</li>
+      <li>Conversion at every paywall should measurably exceed cold funnel — this is the commercial logic of community-first.</li>
+      <li>Trigger moments need frequency capping. Not every community engagement should fire a Yesly CTA.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 3: TIER PROGRESSION ============ -->
+
+<section id="chart-3" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 03 · Monetisation</div>
+    <h1>Plan Tier Progression</h1>
+    <p class="lede">The whole monetisation story on one chart. Each row is a tier. Movement is mostly downward; some users skip tiers.</p>
+  </div>
+
+  <pre class="ascii-chart">==================================================
+                    FREE TIER
+==================================================
+                |
+                v
+        - YesLifers community access
+        - Sample plan PDF (generic archetype)
+        - 3 life-stage questions / avatar
+        - Clarity &amp; Blindspots (limited)
+        - Persona / archetype reveal
+                |
+                v
+        Value to user: low. Value to Yesly: lead.
+                |
+                v
+        [$ Conversion — Financial Plan]
+                |
+                v
+==================================================
+   TIER 1 — FINANCIAL PLAN (one-time ~Rs 249)
+==================================================
+                |
+                v
+        - Comprehensive personal financial plan
+        - Household-aware
+        - Goal mapping (short/medium/long)
+        - Life Events incorporated
+        - Budget guidance
+        - Hell Yes Decisions module
+        - Asset allocation FRAMEWORK
+          (generic, not portfolio-specific)
+        - PDF + in-app view + email
+        - Risk profile completed (SEBI suitability)
+                |
+                v
+        Purpose: cheap entry; heavy deliverable.
+        Yesly role: paid lead qualifier.
+                |
+                v
+        [$ Conversion — Investment Plan]
+                |
+                v
+==================================================
+   TIER 2 — INVESTMENT PLAN (one-time, premium)
+==================================================
+                |
+                v
+        - REQUIRES portfolio data (hard gate)
+          via AA, CAS PDF, statement upload,
+          or manual
+        - Portfolio-specific analysis
+        - Current vs target allocation
+        - Gap analysis with recommendations
+        - Action report (what to buy/sell/hold)
+        - Risk-adjusted suitability per holding
+        - PDF + in-app view
+                |
+                v
+        Purpose: high-value one-time deliverable.
+        Yesly role: meaningful one-time revenue;
+        proof-of-value before subscription ask.
+                |
+                v
+        [$ Conversion — Ongoing Subscription]
+                |
+                v
+==================================================
+     TIER 3 — ONGOING SUBSCRIPTION (monthly)
+==================================================
+                |
+                v
+        - Live dashboard
+        - Portfolio tracking (refreshed via AA)
+        - Drift detection (algorithm watches)
+        - Rebalancing alerts when threshold breached
+        - New trade idea notifications (curated v1)
+        - In-app execution via smallcase / BSE StAR
+            v1: deep-link to broker
+            v1.5: in-app execution
+        - Monthly portfolio health summary
+        - Periodic behavioural check-ins
+        - Updated Investment Plan on demand
+                |
+                v
+        Purpose: recurring revenue engine.
+        Yesly role: MRR base; long-term commercial.
+                |
+                v
+        [Off-app handoff — advisory escalation]
+                |
+                v
+==================================================
+    TIER 4 — HUMAN ADVISORY (outside the app)
+==================================================
+                |
+                v
+        - Direct human planner conversation
+        - Existing HoA process / channels
+        - App provides:
+            - Pre-meeting context summary
+              (advisor sees user's state)
+            - Post-meeting summary capture
+              (advisor enters notes into
+               lightweight console)
+            - Check-in reminders in app
+        - Advisory dialogue happens off-app
+                |
+                v
+        Purpose: top of value pyramid.
+        Yesly role: AUM acquisition channel for
+        HoA's broader business.
+
+==================================================
+        DOWNGRADE / CHURN PATHS
+==================================================
+                |
+                v
+        - Subscription canceled --&gt; Tier 2 retained
+            (keep Investment Plan, lose live features)
+        - Investment Plan refunded within window
+            --&gt; back to Tier 1 (Financial Plan kept)
+        - Financial Plan refunded within window
+            --&gt; back to Free
+        - Subscription past_due &gt; grace
+            --&gt; auto-downgrade to Tier 2
+        - Dormancy 90 days --&gt; reactivation campaign
+        - Dormancy 365 days --&gt; hard churn
+        - Manual erasure request (DPDP)
+            --&gt; anonymise (audit retained per SEBI)
+        - Subscription reactivation
+            --&gt; back to Tier 3
+            (no re-purchase of Investment Plan)
+
+==================================================
+        TIER-SKIPPING PATHS
+==================================================
+                |
+                v
+        Non-linear progressions possible:
+        - Free --&gt; Tier 2 (skip Financial Plan)
+            Requires portfolio data + risk profile
+            UI: "Already have a plan? Get
+                 Investment Plan directly"
+        - Free --&gt; Tier 3 (skip Tier 1 + Tier 2)
+            Discouraged in UX; only via promo /
+            cohort campaign / advisor referral
+        - Tier 1 --&gt; Tier 3 (skip Tier 2)
+            Still requires portfolio data, so
+            effectively forces Tier 2 work
+            (bundle pricing possible)
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li><strong>Four paid tiers + free + churn.</strong> Complete monetisation surface.</li>
+      <li><strong>Tier 4 lives outside the app.</strong> App provides context window and check-in surface only.</li>
+      <li><strong>Downgrade behaviour is architecturally important.</strong> Lapsed subs keep read access to Investment Plan and Financial Plan; lose live features (alerts, drift, ideas).</li>
+      <li><strong>Tier-skipping paths exist.</strong> UX must allow direct entry at Tier 2 — gate is portfolio data + risk profile, not prior tier purchase.</li>
+      <li><strong>Tier 4 is not self-served.</strong> Opt-in by HoA via an internal "promote to Tier 4" admin action.</li>
+      <li><strong>Pricing not finalised.</strong> ~Rs 249 illustrative. Investment Plan and Subscription prices open.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 4: SUBSCRIBED LIFECYCLE ============ -->
+
+<section id="chart-4" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 04 · User Journey</div>
+    <h1>Subscribed User Monthly Lifecycle</h1>
+    <p class="lede">Where the subscription value — and most of the engineering effort — lives. The repeating monthly loop.</p>
+  </div>
+
+  <pre class="ascii-chart">================================================
+       THE MONTHLY LOOP (Tier 3 subscriber)
+================================================
+
+  WEEK 1: PORTFOLIO HEALTH CHECK
+                |
+                v
+        (System: refresh AA data, executed holdings)
+                |
+                v
+        (System: compute drift vs target allocation)
+                |
+                v
+    &lt;drift &gt; threshold?&gt; --NO--&gt; (no alert, log)
+                |
+                YES
+                v
+        (System: generate rebalancing recommendation)
+                |
+                v
+        (Compliance gate — curated review in v1)
+                |
+                v
+        [Notification: rebalancing needed]
+                |
+                v
+        [Rebalancing screen — proposed changes]
+                |
+                v
+    &lt;user accepts?&gt; --NO--&gt; (log decline, learn)
+                |
+                YES
+                v
+        [V1: deep link to smallcase / BSE StAR]
+        [V1.5: in-app execution]
+                |
+                v
+        (Order placed)
+                |
+                v
+
+  WEEK 2: NEW IDEA SURFACED
+                |
+                v
+        (HoA publishes curated idea via admin)
+                |
+                v
+        (Compliance gate — internal review)
+                |
+                v
+        (System: matches idea to user's risk profile
+         + portfolio + suitability)
+                |
+                v
+    &lt;user matches?&gt; --NO--&gt; (skip)
+                |
+                YES
+                v
+        [Notification: new idea]
+                |
+                v
+        [Idea detail screen]
+                |
+                v
+    &lt;user interested?&gt; --NO--&gt; (log, learn)
+                |
+                YES
+                v
+        [V1 deep link / V1.5 in-app execution]
+                |
+                v
+
+  WEEK 3: BEHAVIOURAL CHECK-IN
+                |
+                v
+        [Notification: how's the journey]
+                |
+                v
+        [Check-in screen]
+                |
+                v
+    &lt;flagged for escalation?&gt; --YES--&gt; Tier 4 advisor
+                |
+                NO
+                v
+        (Log engagement)
+                |
+                v
+
+  WEEK 4: PLAN HEALTH SUMMARY
+                |
+                v
+        [Notification: monthly summary]
+                |
+                v
+        [Monthly summary screen]
+                |
+                v
+        (Log; loop continues)
+
+================================================
+       BILLING EVENT (any week)
+================================================
+                |
+                v
+        (Razorpay: monthly charge)
+                |
+                v
+    &lt;success?&gt; --YES--&gt; (continue loop)
+                |
+                NO
+                v
+        (Dunning: day 1, 3, 5, 7)
+                |
+                v
+    &lt;recovered?&gt; --YES--&gt; (continue)
+                |
+                NO
+                v
+        (Auto-downgrade to Tier 2)
+
+================================================
+        ESCALATION PATH (any week)
+================================================
+                |
+                v
+        Triggered by:
+        - User-initiated "talk to advisor"
+        - Major life event in check-in
+        - Drift / risk re-profile threshold
+                |
+                v
+        (Route to HoA advisor scheduling)
+                |
+                v
+        [In-app calendar slot]
+                |
+                v
+        (Off-app human conversation)
+                |
+                v
+        (Advisor enters summary via
+         lightweight console)
+                |
+                v
+        [In-app summary visible to user]
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>Four-week cadence, but assignments are not rigid. The rhythm matters more than the day.</li>
+      <li>Notification fatigue is a real risk. Communication preferences are v1 scope.</li>
+      <li>The compliance gate before any user-facing recommendation is non-negotiable in v1.</li>
+      <li>Billing runs parallel to advisory cadence, not within it. A failed charge does not interrupt advisory immediately — it interrupts after dunning.</li>
+      <li>Escalation to Tier 4 should feel premium, not transactional.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 5: ACCOUNT AGGREGATOR ============ -->
+
+<section id="chart-5" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 05 · System Sequence</div>
+    <h1>Account Aggregator Consent &amp; Data Fetch</h1>
+    <p class="lede">The single most complex integration in v1. Compliance-critical. The user gives consent for read-only access to their financial data, which then refreshes on a schedule.</p>
+  </div>
+
+  <pre class="ascii-chart">ACTORS (columns):
+
+[USER]   [YESLY APP]   [YESLY BACKEND]   [AA VENDOR]   [USER'S FI*]
+                                          (Setu/etc)     (Bank/AMC/
+                                                          Broker)
+
+* FI = Financial Information Provider
+
+STEP 1: INITIATE CONSENT
+========================
+
+[USER]
+   |
+   | taps "Link my accounts"
+   v
+[YESLY APP]
+   |
+   | POST /aa/consent/initiate
+   |   { household_id, requested_fi_types,
+   |     purpose, frequency, duration }
+   v
+[YESLY BACKEND]
+   |
+   | (validate suitability, log consent intent)
+   |
+   | POST /consent
+   |   (vendor-specific payload)
+   v
+[AA VENDOR]
+   |
+   | returns consent handle + redirect URL
+   v
+[YESLY BACKEND]
+   |
+   | stores consent_handle, returns URL
+   v
+[YESLY APP]
+   |
+   | opens AA vendor consent UI
+   | (in-app browser or deep link)
+   v
+[USER]
+   |
+   | sees AA consent screen
+   | selects accounts to share
+   | approves consent
+   v
+[AA VENDOR]
+   |
+   | notifies YESLY via webhook:
+   |   "consent approved"
+   v
+[YESLY BACKEND]
+   |
+   | updates consent state: ACTIVE
+   | triggers initial data fetch
+
+
+STEP 2: INITIAL DATA FETCH
+==========================
+
+[YESLY BACKEND]
+   |
+   | POST /fi-request (with consent_handle)
+   v
+[AA VENDOR]
+   |
+   | forwards request to each FI
+   v
+[USER'S FI]
+   |
+   | prepares encrypted FI data
+   v
+[AA VENDOR]
+   |
+   | webhook to YESLY: "data ready"
+   v
+[YESLY BACKEND]
+   |
+   | GET /fi-data (with session key)
+   v
+[AA VENDOR]
+   |
+   | returns encrypted FI bundle
+   v
+[YESLY BACKEND]
+   |
+   | decrypts (private key)
+   | parses (bank balances, MF holdings,
+   |         deposits, loans, etc.)
+   | normalises into internal schema
+   | stores in Postgres (field-encrypted)
+   | recomputes household net worth
+   | triggers plan refresh if applicable
+
+
+STEP 3: SCHEDULED REFRESH
+=========================
+
+[YESLY BACKEND — cron]
+   |
+   | every N days (per consent.frequency)
+   | for each ACTIVE consent:
+   |
+   v
+   POST /fi-request (re-uses consent_handle)
+   |
+   ... (same as Step 2 from here)
+
+
+STEP 4: CONSENT REVOCATION
+==========================
+
+[USER]
+   |
+   | taps "Unlink accounts"
+   v
+[YESLY APP]
+   |
+   | POST /aa/consent/revoke
+   v
+[YESLY BACKEND]
+   |
+   | POST /consent/revoke
+   v
+[AA VENDOR]
+   |
+   | revokes consent at AA
+   | notifies FIs
+   v
+[YESLY BACKEND]
+   |
+   | updates consent state: REVOKED
+   | retains historical fetched data
+   | (subject to retention policy)
+   | stops scheduled refresh
+
+
+STEP 5: CONSENT EXPIRY
+======================
+
+   (Consent is time-bound by design.
+    Reaching expiry == auto-revocation.)
+
+[YESLY BACKEND — cron]
+   |
+   | detects consent.expires_at &lt; now
+   | marks consent EXPIRED
+   | notifies user: "Re-link your accounts"
+   v
+[YESLY APP]
+   |
+   | banner: "Consent expired, re-link"
+   v
+[USER]
+   |
+   | (Step 1 again, new consent)
+
+
+ERROR PATHS (not shown in detail):
+- AA vendor downtime --&gt; retry queue,
+   user-facing graceful degradation
+- FI declines data --&gt; log, notify user,
+   allow manual entry
+- Stale data &gt; N days --&gt; dashboard shows
+   "data outdated" badge
+- Failed decryption --&gt; alert engineering,
+   escalate
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>Five distinct sub-flows: initiate, initial fetch, refresh, revoke, expire. All five must work in v1.</li>
+      <li>The consent is between user and AA vendor; Yesly is a Financial Information User (FIU). Yesly must be registered as an FIU before this integration is possible. That registration is real operational work, not just code.</li>
+      <li>Encryption is end-to-end. The FI encrypts the data with Yesly's public key. The AA vendor cannot read it in transit. This is by design and must be respected.</li>
+      <li>Storing decrypted data at rest in Postgres is allowed, but each PII field must be field-level encrypted. The decryption key must be in a separate KMS.</li>
+      <li>"Frequency" of refresh is part of the consent — typical values: monthly, quarterly. Cannot exceed what the user agreed to. The cron must read per-consent frequency, not a global setting.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 6: RECOMMENDATION PIPELINE ============ -->
+
+<section id="chart-6" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 06 · System Sequence</div>
+    <h1>Recommendation Pipeline (Curated, v1)</h1>
+    <p class="lede">The v1 substitute for the full algorithm. Humans publish curated baskets. The system applies suitability filters per user. The user sees only what they match.</p>
+  </div>
+
+  <pre class="ascii-chart">ACTORS (columns):
+
+[HoA]    [ADMIN     [COMPLIANCE   [YESLY      [YESLY APP]   [USER]
+ANALYST]  CONSOLE]  REVIEWER]    BACKEND]
+
+
+STEP 1: BASKET / IDEA AUTHORING
+================================
+
+[HoA ANALYST]
+   |
+   | drafts idea / basket:
+   |   - thesis
+   |   - constituent instruments
+   |   - target allocation
+   |   - risk classification
+   |   - suitability criteria
+   |       (min age, min income,
+   |        risk profile range,
+   |        time horizon)
+   |   - source data references
+   v
+[ADMIN CONSOLE]
+   |
+   | POST /admin/ideas (draft)
+   v
+[YESLY BACKEND]
+   |
+   | stores idea in DRAFT state
+   | version-tagged
+   | notifies compliance reviewer
+
+
+STEP 2: COMPLIANCE REVIEW
+=========================
+
+[COMPLIANCE REVIEWER]
+   |
+   | opens idea in admin console
+   v
+[ADMIN CONSOLE]
+   |
+   | shows full thesis + audit trail
+   v
+[COMPLIANCE REVIEWER]
+   |
+   | applies SEBI RIA checks:
+   |   - no return promises in copy
+   |   - disclosures present
+   |   - suitability criteria sensible
+   |   - conflict-of-interest declared
+   |
+   | takes action: APPROVE / REJECT / REQUEST_CHANGES
+   v
+[ADMIN CONSOLE]
+   |
+   | POST /admin/ideas/{id}/review
+   v
+[YESLY BACKEND]
+   |
+   | if APPROVED:
+   |     idea state --&gt; APPROVED
+   |     append immutable audit record
+   |     trigger Step 3 (matching)
+   |
+   | if REJECTED / CHANGES:
+   |     idea state --&gt; DRAFT (with notes)
+   |     notify analyst
+
+
+STEP 3: SUITABILITY MATCHING (PER USER)
+========================================
+
+[YESLY BACKEND]
+   |
+   | for each APPROVED idea:
+   |   for each Tier 3 subscribed user:
+   |
+   |     load:
+   |       - user risk profile
+   |       - household financial state
+   |       - current portfolio
+   |       - existing goals
+   |       - prior idea history
+   |
+   |     evaluate suitability:
+   |       - risk profile in range?
+   |       - portfolio not over-concentrated?
+   |       - allocation doesn't break asset mix?
+   |       - not duplicate of held position?
+   |       - meets user's investable surplus?
+   |
+   |     &lt;suitable?&gt; --NO--&gt; log decline reason, skip
+   |             |
+   |             YES
+   |             v
+   |     create user_idea_match record
+   |     queue notification
+
+
+STEP 4: USER NOTIFICATION + DECISION
+=====================================
+
+[YESLY BACKEND]
+   |
+   | dispatches notification:
+   |   - push
+   |   - in-app inbox entry
+   v
+[YESLY APP]
+   |
+   | user sees notification
+   v
+[USER]
+   |
+   | opens idea detail screen
+   v
+[YESLY APP]
+   |
+   | renders:
+   |   - thesis
+   |   - suitability badge
+   |   - "Why this for you" personalisation
+   |   - suggested allocation amount
+   |   - risk warnings
+   |   - disclosures
+   v
+[USER]
+   |
+   | decides:
+   |   - ACT NOW
+   |   - SAVE FOR LATER
+   |   - NOT INTERESTED
+   |   - TALK TO ADVISOR
+   v
+[YESLY APP]
+   |
+   | POST /ideas/{id}/decision
+   v
+[YESLY BACKEND]
+   |
+   | stores decision
+   | appends to compliance audit trail
+   |
+   | if ACT NOW --&gt; branch to Chart 7 (order placement)
+   | if TALK TO ADVISOR --&gt; route to Tier 4 escalation
+   | if other --&gt; log only
+
+
+STEP 5: POST-PUBLICATION DRIFT MONITORING
+==========================================
+
+[YESLY BACKEND — cron, daily]
+   |
+   | for each APPROVED idea still live:
+   |   recompute thesis health metrics
+   |
+   | &lt;thesis broken?&gt; --YES--&gt; notify HoA analyst
+   |     (signal degradation)            |
+   |                                     v
+   |                                 [HoA decides:
+   |                                  amend / retire idea]
+   |
+   | &lt;retire?&gt; --YES--&gt; idea state --&gt; RETIRED
+   |                    notify users who acted on it
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>Three actors involved in idea creation: analyst (author), compliance (reviewer), system (matcher). Separation of duties is SEBI-relevant.</li>
+      <li>Every state transition writes to an immutable audit table. Non-negotiable.</li>
+      <li>Suitability matching is per-user and runs server-side. Users do not see ideas they don't match. This is a runtime filter, not a UI hide.</li>
+      <li>Drift monitoring (Step 5) is the "lite algorithm" piece in v1 — algorithms watch the thesis, humans decide what to do.</li>
+      <li>In v2, Step 1 changes to algorithm-generated drafts. Steps 2–5 remain identical. The compliance gate must work robustly in v1 because it is the v2 control surface too.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 7: ORDER PLACEMENT ============ -->
+
+<section id="chart-7" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 07 · System Sequence</div>
+    <h1>Order Placement — v1 Deep-Link &amp; v1.5 In-App</h1>
+    <p class="lede">Both versions side-by-side. Same intent — the user wants to act on a recommendation. Two different execution surfaces.</p>
+  </div>
+
+  <pre class="ascii-chart">==========================================================
+                V1 PATH — DEEP-LINK EXECUTION
+==========================================================
+
+[USER]
+   |
+   | taps "Invest now" on idea / rebalance screen
+   v
+[YESLY APP]
+   |
+   | POST /orders/intent
+   |   { user, idea_id, target_amount }
+   v
+[YESLY BACKEND]
+   |
+   | (compliance gate: re-verify suitability at click time)
+   | (record execution intent in audit)
+   | constructs deep-link URL:
+   |   - smallcase URL with constituents pre-filled
+   |   - OR BSE StAR MF URL with scheme + amount
+   | returns URL
+   v
+[YESLY APP]
+   |
+   | opens external browser / smallcase app
+   v
+[SMALLCASE / BSE STAR]
+   |
+   | user completes execution outside Yesly
+   | (broker auth, payment, confirmation —
+   |  none of this is visible to Yesly)
+   v
+[USER]
+   |
+   | returns to Yesly app eventually
+   v
+[YESLY APP]
+   |
+   | prompts: "Did you complete the trade?"
+   |   YES / NO / NOT YET
+   v
+[YESLY BACKEND]
+   |
+   | logs user-reported outcome
+   | (no system confirmation possible in v1)
+   |
+   | --&gt; displayed as "self-reported" in dashboard
+   | --&gt; portfolio update relies on next AA refresh
+   |     to confirm actual execution
+
+
+==========================================================
+                V1.5 PATH — IN-APP EXECUTION
+==========================================================
+
+[USER]
+   |
+   | taps "Invest now"
+   v
+[YESLY APP]
+   |
+   | POST /orders/place
+   v
+[YESLY BACKEND]
+   |
+   | compliance gate: re-verify suitability
+   | check market hours
+   |
+   | &lt;market open?&gt; --NO--&gt; queue for next session,
+   |                         notify user
+   |             |
+   |             YES
+   |             v
+   | check broker link status
+   |
+   | &lt;broker linked?&gt; --NO--&gt; [USER linking flow]
+   |             |
+   |             YES
+   |             v
+   | construct order payload
+   | (smallcase Gateway API OR BSE StAR MF API)
+   |
+   | POST /order (vendor API)
+   v
+[BROKER GATEWAY]
+   |
+   | validates, places at exchange
+   | returns order_id, ACK state
+   v
+[YESLY BACKEND]
+   |
+   | stores order with state PLACED
+   | returns success to app
+   v
+[YESLY APP]
+   |
+   | shows "Order placed, processing"
+   v
+
+   ... (time passes, async)
+
+[BROKER GATEWAY]
+   |
+   | webhook to Yesly:
+   |   - EXECUTED (success)
+   |   - PARTIALLY_FILLED
+   |   - REJECTED
+   |   - CANCELLED
+   v
+[YESLY BACKEND]
+   |
+   | updates order state
+   | updates internal holdings ledger
+   | notifies user via push
+   v
+[YESLY APP]
+   |
+   | shows result
+   v
+[USER]
+   |
+   | sees confirmation
+
+
+==========================================================
+        RECONCILIATION (V1.5 ONLY) — daily cron
+==========================================================
+
+[YESLY BACKEND — cron]
+   |
+   | for each user with executed orders:
+   |   fetch latest holdings from broker
+   |   fetch latest holdings from AA
+   |   merge into single "portfolio view"
+   |
+   |   &lt;discrepancy?&gt; --YES--&gt; flag for review
+   |                            (broker says X,
+   |                             AA says Y)
+   |             |
+   |             NO
+   |             v
+   |   update consolidated portfolio
+   |   recompute drift, net worth, goal progress
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>V1 has no order ledger. V1.5 introduces it. A meaningful architectural difference.</li>
+      <li>V1 cannot confirm actual execution — relies on user self-report + AA lag. Dashboard data in v1 is up to 7 days stale post-trade.</li>
+      <li>V1.5 reconciliation problem is real. AA data and broker data must agree. Same ISIN, two sources, often different timing. Reconciliation logic must exist.</li>
+      <li>The compliance gate "re-verify suitability at click time" exists in both versions.</li>
+      <li>Market-hours awareness only matters in v1.5. In v1 the user does this themselves at smallcase.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 8: SUBSCRIPTION BILLING ============ -->
+
+<section id="chart-8" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 08 · System Sequence</div>
+    <h1>Subscription Billing Lifecycle</h1>
+    <p class="lede">The revenue infrastructure for Tier 3 monthly subscription. Razorpay handles most of the heavy lifting; Yesly handles state and consequences.</p>
+  </div>
+
+  <pre class="ascii-chart">ACTORS (columns):
+
+[USER]   [YESLY APP]   [YESLY BACKEND]   [RAZORPAY]
+
+
+SUBSCRIPTION CREATION
+=====================
+
+[USER]
+   |
+   | taps "Subscribe"
+   v
+[YESLY APP]
+   |
+   | POST /billing/subscribe
+   v
+[YESLY BACKEND]
+   |
+   | POST /subscriptions (Razorpay API)
+   |   { plan_id, customer_email, start_date }
+   v
+[RAZORPAY]
+   |
+   | creates subscription, returns short_url
+   v
+[YESLY BACKEND]
+   |
+   | stores subscription state: PENDING
+   | returns checkout URL
+   v
+[YESLY APP]
+   |
+   | opens Razorpay hosted checkout
+   v
+[USER]
+   |
+   | enters card / UPI mandate
+   | authorises recurring debit
+   v
+[RAZORPAY]
+   |
+   | first charge attempted
+   |
+   | &lt;charge success?&gt; --YES--&gt; webhook:
+   |             |               subscription.activated
+   |             NO
+   |             v
+   |             webhook: subscription.charge_failed
+   |             (no subscription created, app retries)
+
+
+MONTHLY CHARGE
+==============
+
+[RAZORPAY — recurring cron]
+   |
+   | charges configured method
+   |
+   | &lt;success?&gt; --YES--&gt; webhook: subscription.charged
+   |       |                |
+   |       NO               v
+   |       v             [YESLY BACKEND]
+   |    webhook:            |
+   |    payment.failed      | mark month paid
+   |       |                | extend access window
+   |       v                | log invoice
+   |  [YESLY BACKEND]       |
+   |       |                v
+   |       | begin dunning [USER]
+   |       |                  notification:
+   |       v                  "Payment received"
+   |   [Dunning chart below]
+
+
+DUNNING SEQUENCE
+================
+
+(Triggered by payment.failed webhook)
+
+[YESLY BACKEND]
+   |
+   | mark subscription PAST_DUE
+   | start grace window (e.g., 7 days)
+   |
+   v
+[Day 1] email to user
+   "Your payment didn't go through, please retry"
+   |
+   v
+[Day 3] email reminder + in-app banner
+   |
+   v
+[Day 5] push notification + banner intensified
+   |
+   v
+[Day 7] final email
+   "Subscription will pause tomorrow"
+   |
+   v
+   &lt;user resolved payment?&gt;
+       |                    |
+       YES                  NO
+       v                    v
+[YESLY BACKEND]      [YESLY BACKEND]
+   reactivate           downgrade to Tier 2
+   resume cycle         keep last plan readable
+                        revoke live features
+                        send "we miss you" email
+
+
+USER-INITIATED CANCELLATION
+============================
+
+[USER]
+   |
+   | Settings --&gt; "Cancel subscription"
+   v
+[YESLY APP]
+   |
+   | shows cancellation reason picker
+   | shows downgrade implications
+   | confirms
+   v
+[YESLY BACKEND]
+   |
+   | POST /subscriptions/{id}/cancel (Razorpay)
+   v
+[RAZORPAY]
+   |
+   | sets cancel_at_period_end = true
+   | returns ACK
+   v
+[YESLY BACKEND]
+   |
+   | mark subscription CANCEL_PENDING
+   | retains access until period end
+   |
+   (at period end)
+   v
+[RAZORPAY webhook]
+   |
+   | subscription.completed
+   v
+[YESLY BACKEND]
+   |
+   | downgrade user to Tier 2
+   | preserve plan + history
+   | send "thanks, come back anytime" email
+
+
+REFUND HANDLING
+===============
+
+[USER]
+   |
+   | requests refund (support flow,
+   |   not self-service)
+   v
+[HoA support team]
+   |
+   | reviews case, decides
+   v
+[ADMIN CONSOLE]
+   |
+   | POST /admin/refund
+   v
+[YESLY BACKEND]
+   |
+   | POST /payments/{id}/refund (Razorpay)
+   v
+[RAZORPAY]
+   |
+   | processes refund
+   | webhook: refund.processed
+   v
+[YESLY BACKEND]
+   |
+   | logs refund
+   | adjusts user state if needed
+   | notifies user
+
+GST / INVOICING (cross-cutting)
+================================
+
+   - Razorpay generates GST-compliant invoices
+     (Yesly's GSTIN configured at Razorpay account)
+   - Invoice PDF stored in object storage
+   - User can download from in-app receipts screen
+   - Quarterly GST returns filed via HoA's CA
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>Razorpay does the heavy lifting. Yesly stores state and reacts to webhooks. The right division.</li>
+      <li>Five distinct flows: create, monthly charge, dunning, cancel, refund. All five must work in v1 of the subscription feature.</li>
+      <li>Dunning cadence (1–3–5–7 days) is a reasonable default but should be optimised via experimentation.</li>
+      <li>Refunds are not self-service. Intentional — keeps support cost low and prevents abuse.</li>
+      <li>GST is handled at the Razorpay layer, not in Yesly's code. Requires Yesly's GSTIN to be configured. Operational, not engineering.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 9: DATA MODEL ============ -->
+
+<section id="chart-9" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 09 · Structural</div>
+    <h1>Household &amp; User Data Model</h1>
+    <p class="lede">The structural picture of how the data is organised. Household is the root entity. A User belongs to a Household. Most financial entities belong to the household, not to one user.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Scope split</div>
+    <p><strong>HoA designs the entity model and relationships</strong> (as shown below) — these are product expression and cannot be outsourced. <strong>The partner builds the implementation</strong> — index strategy, partitioning, migrations, query optimisation, connection pooling, backup and replica configuration. The partner is invited into the design conversation during the discovery sprint as paid consultants, but design authority sits with HoA.</p>
+  </div>
+
+  <pre class="ascii-chart">+--------------------+
+|    HOUSEHOLD       |
++--------------------+
+| id (PK)            |
+| created_at         |
+| primary_user_id    |---+
+| household_name     |   |
+| household_currency |   |
++----------+---------+   |
+           |             |
+           | 1:N         |
+           v             |
++--------------------+   |
+|       USER         |&lt;--+
++--------------------+
+| id (PK)            |
+| household_id (FK)  |
+| email              |
+| phone              |
+| role_in_household  |
+|   ('primary',      |
+|    'spouse',       |
+|    'dependent')    |
+| created_at         |
++----------+---------+
+           |
+           | 1:1
+           v
++--------------------+
+|     PROFILE        |
++--------------------+
+| user_id (PK,FK)    |
+| display_name       |
+| dob                |
+| persona            |
+| archetype          |
+| avatar             |
+| risk_profile       |
+| risk_assessed_at   |
++--------------------+
+
+
+HOUSEHOLD-OWNED ENTITIES
+========================
+
+(Things that belong to the household, not to one user)
+
++--------------------+      +--------------------+
+|     GOAL           |      | DEPENDENT          |
++--------------------+      +--------------------+
+| id (PK)            |      | id (PK)            |
+| household_id (FK)  |      | household_id (FK)  |
+| name               |      | name               |
+| type               |      | relationship       |
+|  ('retirement',    |      |  ('child',         |
+|   'home',          |      |   'parent',        |
+|   'children_ed',   |      |   'other')         |
+|   'travel', etc.)  |      | dob                |
+| target_amount      |      | financial_link     |
+| target_date        |      |  ('full',          |
+| priority           |      |   'partial',       |
+| created_at         |      |   'future')        |
++--------------------+      +--------------------+
+
++--------------------+      +--------------------+
+|     PLAN           |      | LIFE_EVENT         |
++--------------------+      +--------------------+
+| id (PK)            |      | id (PK)            |
+| household_id (FK)  |      | household_id (FK)  |
+| version            |      | type               |
+| tier               |      |  ('marriage',      |
+|  ('financial',     |      |   'kid', 'home',   |
+|   'investment')    |      |   'job_change',    |
+| state              |      |   'sabbatical',    |
+|  ('draft',         |      |    etc.)           |
+|   'active',        |      | date (planned or   |
+|   'archived')      |      |       actual)      |
+| generated_at       |      | financial_impact   |
+| pdf_url            |      | linked_goal_id     |
+| engine_version     |      +--------------------+
+| assumption_set_id  |
++--------------------+
+
++--------------------+      +--------------------+
+|     ASSET          |      |  LIABILITY         |
++--------------------+      +--------------------+
+| id (PK)            |      | id (PK)            |
+| household_id (FK)  |      | household_id (FK)  |
+| owner_user_id (FK) |      | owner_user_id (FK) |
+|   (optional —      |      | type ('home_loan', |
+|    asset can be    |      |  'personal_loan',  |
+|    individually    |      |  'credit_card')    |
+|    owned)          |      | principal          |
+| type ('equity',    |      | rate               |
+|  'mf', 'fd',       |      | tenure             |
+|  'real_estate',    |      | emi                |
+|  'gold', 'crypto') |      | source             |
+| value              |      +--------------------+
+| as_of_date         |
+| source ('aa',      |
+|  'cas_pdf',        |
+|  'statement_pdf',  |
+|  'manual',         |
+|  'broker')         |
+| metadata (JSON)    |
++--------------------+
+
+
+USER-OWNED ENTITIES (NOT HOUSEHOLD)
+====================================
+
+(Things that belong to one user — not shared)
+
++--------------------+      +--------------------+
+| AUTH_SESSION       |      | NOTIFICATION_PREF  |
++--------------------+      +--------------------+
+| user_id (FK)       |      | user_id (FK)       |
+| token              |      | category           |
+| expires_at         |      | channel            |
++--------------------+      | enabled            |
+                            +--------------------+
+
++--------------------+
+| COMMUNITY_PROFILE  |
++--------------------+
+| user_id (FK)       |
+| pledge_accepted_at |
+| display_handle     |
+| etc.               |
++--------------------+
+
++--------------------+      +--------------------+
+| AUDIT_EVENT        |      | CONSENT_RECORD     |
++--------------------+      +--------------------+
+| id (PK)            |      | id (PK)            |
+| user_id (FK)       |      | user_id (FK)       |
+| household_id (FK)  |      | type               |
+| event_type         |      |  ('aa', 'kyc',     |
+| payload (JSON)     |      |   'marketing',     |
+| created_at         |      |   'subscription')  |
+|   (immutable!)     |      | granted_at         |
++--------------------+      | revoked_at         |
+                            | expires_at         |
+                            +--------------------+
+
+
+SUBSCRIPTION-RELATED
+====================
+
++--------------------+      +--------------------+
+| SUBSCRIPTION       |      | INVOICE            |
++--------------------+      +--------------------+
+| id (PK)            |      | id (PK)            |
+| household_id (FK)  |      | subscription_id    |
+|  (sub is per       |      |   (FK)             |
+|   household, not   |      | razorpay_id        |
+|   per user)        |      | amount             |
+| razorpay_id        |      | gst                |
+| state              |      | status             |
+|  ('pending',       |      | period_start       |
+|   'active',        |      | period_end         |
+|   'past_due',      |      | invoice_pdf_url    |
+|   'cancel_pending',|      +--------------------+
+|   'canceled')      |
+| started_at         |
+| current_period_end |
++--------------------+
+
+
+RECOMMENDATION + ORDER (V1.5)
+==============================
+
++--------------------+      +--------------------+
+|      IDEA          |      | USER_IDEA_MATCH    |
++--------------------+      +--------------------+
+| id (PK)            |      | id (PK)            |
+| version            |      | idea_id (FK)       |
+| state              |      | user_id (FK)       |
+| thesis             |      | matched_at         |
+| constituents (JSON)|      | decision           |
+| risk_class         |      |  ('act', 'save',   |
+| suitability_rules  |      |   'decline',       |
+|  (JSON)            |      |   'advisor')       |
+| reviewer_id        |      | decided_at         |
+| approved_at        |      +--------------------+
++--------------------+
+
++--------------------+
+|     ORDER          |
++--------------------+
+| id (PK)            |
+| user_id (FK)       |
+| household_id (FK)  |
+| idea_id (FK)       |
+|  (nullable —       |
+|   rebalance orders |
+|   may not tie to   |
+|   an idea)         |
+| broker             |
+|  ('smallcase',     |
+|   'bse_star')      |
+| state              |
+| amount             |
+| placed_at          |
+| executed_at        |
+| broker_ref         |
++--------------------+
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li><strong>Most entities hang off HOUSEHOLD, not USER.</strong> This is the core structural decision.</li>
+      <li>ASSET and LIABILITY have an optional <code>owner_user_id</code> — useful for tax / nominee purposes, but the financial picture rolls up to the household.</li>
+      <li><strong>SUBSCRIPTION is per household</strong> — not per user. A household has one subscription; the spouse does not pay separately.</li>
+      <li>AUDIT_EVENT and CONSENT_RECORD are per user — SEBI/DPDP-relevant and must be individually attributable.</li>
+      <li>COMMUNITY_PROFILE is per user — community participation is individual.</li>
+      <li>PLAN has an <code>assumption_set_id</code> — each plan is locked to the assumption set it was generated against. This is how the "what happens when assumptions change" question is handled.</li>
+      <li>ASSET.source includes <code>cas_pdf</code> and <code>statement_pdf</code> for the upload paths described in Chart 1.</li>
+      <li>IDEA exists once globally. USER_IDEA_MATCH is the per-user instance with the suitability evaluation cached.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 10: COMPLIANCE AUDIT ============ -->
+
+<section id="chart-10" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 10 · Cross-Cutting</div>
+    <h1>Compliance Audit Trail</h1>
+    <p class="lede">How SEBI inspection-readiness works. This is not a sequence of operations — it's the set of cross-cutting requirements that every other chart must respect.</p>
+  </div>
+
+  <pre class="ascii-chart">=================================================================
+            EVERY ADVICE-BEARING EVENT IS LOGGED
+=================================================================
+
+EVENTS THAT MUST BE LOGGED IMMUTABLY:
+
++--------------------------------------------------------------+
+|  CATEGORY              |  EVENTS                              |
++========================+======================================+
+|  Identity              |  - user registered                   |
+|                        |  - KYC submitted (Tier 2)            |
+|                        |  - KYC approved / rejected           |
++------------------------+--------------------------------------+
+|  Suitability           |  - risk profile completed            |
+|                        |  - risk profile updated              |
+|                        |  - household financial snapshot      |
++------------------------+--------------------------------------+
+|  Consent               |  - AA consent granted                |
+|                        |  - AA consent revoked / expired      |
+|                        |  - marketing consent toggled         |
+|                        |  - subscription mandate authorised   |
++------------------------+--------------------------------------+
+|  Plan / advice         |  - plan generated (version + engine) |
+|                        |  - plan paid for                     |
+|                        |  - plan delivered                    |
+|                        |  - plan revised                      |
++------------------------+--------------------------------------+
+|  Idea / recommendation |  - idea authored (analyst)           |
+|                        |  - idea reviewed (reviewer)          |
+|                        |  - idea approved                     |
+|                        |  - idea retired                      |
+|                        |  - suitability match per user        |
+|                        |  - user decision on idea             |
++------------------------+--------------------------------------+
+|  Order                 |  - intent recorded (v1)              |
+|                        |  - order placed (v1.5)               |
+|                        |  - order executed                    |
+|                        |  - order failed / cancelled          |
++------------------------+--------------------------------------+
+|  Advisor               |  - advisor meeting scheduled         |
+|                        |  - advisor summary entered           |
+|                        |  - advice delivered (Tier 4)         |
++------------------------+--------------------------------------+
+|  Grievance             |  - complaint registered              |
+|                        |  - SLA tracking                      |
+|                        |  - resolution / escalation           |
++------------------------+--------------------------------------+
+
+
+THE AUDIT_EVENT TABLE (CONCEPTUAL)
+==================================
+
++---------------------+
+| AUDIT_EVENT         |
++---------------------+
+| id                  |  ULID, time-ordered
+| timestamp           |  server time, UTC
+| user_id             |  the user this concerns
+| household_id        |  household context
+| actor_id            |  who took the action
+|                     |  (user, analyst, system, advisor)
+| actor_type          |  'user' / 'staff' / 'system'
+| event_type          |  enum, see categories above
+| event_category      |  one of the categories
+| payload             |  JSON, full event data
+| payload_hash        |  SHA-256, for tamper detection
+| schema_version      |  evolves with the system
+| created_at          |  immutable
++---------------------+
+
+Properties enforced by design:
+- APPEND-ONLY: no UPDATE, no DELETE
+- Database-level constraint: no row may be modified
+- Storage: separate Postgres table, separate backup cadence
+- Retention: minimum 5 years from end of advisory
+  relationship (SEBI RIA mandate)
+- Anonymisation on DPDP erasure request:
+  user_id replaced with anonymised token,
+  audit events themselves retained (regulation
+  overrides erasure right for advisory records)
+
+
+SEBI INSPECTION READINESS
+=========================
+
+Question SEBI asks         How architecture answers
+------------------         ------------------------
+
+"Show me the advice you    Query AUDIT_EVENT by user_id,
+gave to user X."           filter event_category in
+                           ('plan', 'idea', 'advisor').
+
+"What was the suitability  Query AUDIT_EVENT for suitability
+basis for that advice?"    + risk_profile events preceding
+                           the advice event.
+
+"Did the user consent?"    Query CONSENT_RECORD for the
+                           relevant consent type and
+                           AUDIT_EVENT for grant timestamp.
+
+"Who reviewed this         Query AUDIT_EVENT for the idea,
+recommendation?"           filter event_type =
+                           'idea_reviewed', get actor_id.
+
+"Show me the engine        Look up plan.engine_version
+version and assumptions    and plan.assumption_set_id.
+behind this plan."         Both are immutable references.
+
+"Show me the grievance     Query AUDIT_EVENT for category =
+log for the last year."    'grievance' across all users.
+
+
+CROSS-CUTTING REQUIREMENTS
+==========================
+
+DISCLOSURE TRIGGERS:
+- Every recommendation surface must display:
+  - SEBI RIA registration number
+  - "Investments are subject to market risk"
+  - Conflict-of-interest declaration
+  - Past-performance disclaimer
+- Display logged as event (proves it was shown)
+
+CONSENT MOMENTS (each = one consent_record + audit event):
+- Account creation (T&amp;C, privacy)
+- Marketing communication
+- AA data sharing
+- Subscription mandate (recurring debit)
+- KYC information sharing (Tier 2)
+- Tier 4 advisory engagement letter
+
+GRIEVANCE REDRESSAL UI:
+- "Raise a complaint" surface in app
+- Categorised intake
+- SLA timer visible to user
+- Escalation path to SEBI SCORES portal
+- Resolution logged
+
+DPDP DATA SUBJECT RIGHTS:
+- Export ("download my data") — generates JSON bundle
+- Correction — admin-mediated, audit-logged
+- Erasure — anonymise (do not delete), retain audit
+  (resolves SEBI vs DPDP conflict)
+
+PERIODIC ATTESTATIONS:
+- Annual risk profile re-assessment prompt
+- Annual suitability re-confirmation
+- Each attestation is its own audit event
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>This is the single piece of work most likely to be under-scoped by a partner. Push back hard on under-quotes here.</li>
+      <li>The "audit table is immutable" requirement is a database-level constraint. Most agencies implement it as "we just don't UPDATE in code" — insufficient. Postgres triggers or a separate write-only role must enforce it.</li>
+      <li>The DPDP-vs-SEBI conflict (erasure vs retention) has a specific architectural answer: anonymise, do not delete. Replace PII with tokens while keeping the audit trail.</li>
+      <li>The disclosure-display-logged pattern is what SEBI auditors actually look for. If you cannot prove a disclosure was shown to a specific user at a specific time, you are exposed.</li>
+      <li>Grievance redressal is an end-to-end product surface, not just a form. SLA timer, escalation, SEBI SCORES integration are all real work.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 11: KYC ============ -->
+
+<section id="chart-11" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 11 · Integration</div>
+    <h1>KYC Integration — Two Layers</h1>
+    <p class="lede">There are two distinct KYC obligations in Yesly. Conflating them is a common mistake that leads to under-scoped builds.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Two layers, two events</div>
+    <p><strong>Layer 1:</strong> HoA RIA KYC + Advisory Agreement. Triggered when the user moves from "general user" to "client of HoA." Required by SEBI RIA regulations. Diagram assumes Tier 2 trigger; compliance to confirm. <strong>Layer 2:</strong> Broker KYC (smallcase, BSE StAR). Triggered at execution. Handled by the broker. Yesly only initiates the linking flow.</p>
+  </div>
+
+  <pre class="ascii-chart">==========================================================
+LAYER 1: HoA RIA KYC + ADVISORY AGREEMENT
+==========================================================
+
+TRIGGER:
+- User attempts to purchase Investment Plan (Tier 2)
+- (Open question: is Financial Plan also "advice"
+  per SEBI? If yes, KYC triggers at Tier 1.
+  Conservative interpretation: KYC at Tier 1 entry.
+  Aggressive interpretation: KYC at Tier 2 entry.
+  Diagram below assumes Tier 2 trigger.)
+
+[USER]
+   |
+   | initiates Investment Plan purchase
+   v
+[YESLY APP]
+   |
+   | check KYC state for this user
+   |
+   &lt;kyc_status == 'verified'?&gt;
+       |                          |
+       YES                        NO
+       |                          |
+   skip to                        v
+   payment                  [KYC required screen]
+                                  |
+                                  v
+                            "Before we proceed,
+                             we need to verify
+                             your identity"
+                                  |
+                                  v
+                            [PAN entry]
+                                  |
+                                  v
+                            [Aadhaar OTP / DigiLocker]
+                                  |
+                                  v
+                            [Bank account verification]
+                            (penny drop or
+                             reverse penny drop)
+                                  |
+                                  v
+                            [Selfie / liveness check]
+                                  |
+                                  v
+                            [Advisory Agreement display]
+                            - HoA RIA registration
+                            - Fee structure
+                            - Scope of advice
+                            - Conflict-of-interest
+                            - Grievance redressal
+                                  |
+                                  v
+                          &lt;user accepts?&gt;
+                              |          |
+                              YES        NO
+                              |          v
+                              |       (no KYC, no
+                              |        Investment Plan
+                              |        access)
+                              v
+                          (System: POST to KYC vendor
+                           Digio / IDfy / Hyperverge)
+                                  |
+                                  v
+                          [KYC VENDOR]
+                              | validates PAN with
+                              |   Income Tax dept
+                              | validates Aadhaar OTP
+                              | matches name + DOB
+                              | runs sanctions screening
+                              | returns verification result
+                                  |
+                                  v
+                          (Webhook: kyc_completed)
+                                  |
+                                  v
+                          [YESLY BACKEND]
+                              | updates user.kyc_status
+                              |   = 'verified' / 'rejected'
+                              | stores KYC documents
+                              |   (encrypted in object
+                              |    storage, restricted ACL)
+                              | logs audit event
+                              | stores signed advisory
+                              |   agreement copy
+                                  |
+                                  v
+                          &lt;kyc verified?&gt;
+                              |          |
+                              YES        NO
+                              |          v
+                              v       [Rejection screen]
+                          [KYC done    + reason
+                           confirmation] + contact support
+                              |
+                              v
+                          (continue to Investment
+                           Plan payment)
+
+
+==========================================================
+LAYER 2: BROKER KYC (smallcase + BSE StAR)
+==========================================================
+
+TRIGGER:
+- User attempts first execution via broker
+- v1: deep-link to smallcase (broker handles
+       entire KYC at their end; Yesly does
+       not see the KYC data)
+- v1.5: in-app execution requires linking
+        broker account first
+
+
+V1 PATH (DEEP-LINK):
+====================
+
+[USER]
+   |
+   | taps "Invest now" on idea screen
+   v
+[YESLY BACKEND]
+   |
+   | construct deep-link to smallcase / BSE StAR
+   | (no broker KYC state stored in Yesly)
+   v
+[USER]
+   |
+   | leaves Yesly, enters smallcase / BSE StAR
+   v
+[SMALLCASE / BSE STAR]
+   |
+   | runs its own broker KYC if first-time user
+   | (CKYC fetch from CVL, Aadhaar OTP,
+   |  bank verification — independent of
+   |  HoA KYC)
+   |
+   | user completes broker KYC, executes
+   v
+[USER]
+   |
+   | returns to Yesly
+   v
+[YESLY APP]
+   |
+   | prompts: "Did the trade complete?"
+   |   YES / NO / NOT YET
+   |
+   | (Yesly has NO insight into broker KYC
+   |  state in v1; relies on user-reported
+   |  outcome + AA refresh to detect holdings)
+
+
+V1.5 PATH (IN-APP EXECUTION):
+==============================
+
+[USER]
+   |
+   | first execution attempt
+   v
+[YESLY BACKEND]
+   |
+   | check broker link state
+   |
+   &lt;broker_linked?&gt;
+       |                  |
+       YES                NO
+       |                  |
+       v                  v
+   place order      [Broker linking flow]
+   (see Chart 7)          |
+                          v
+                    [Select broker: smallcase
+                     or BSE StAR direct]
+                          |
+                          v
+                    [Broker OAuth-style auth]
+                    (user logs in to broker,
+                     authorises Yesly to
+                     place orders on behalf)
+                          |
+                          v
+                    [BROKER SYSTEM]
+                          |
+                          | returns access token
+                          | + KYC status indicator
+                          v
+                    [YESLY BACKEND]
+                          |
+                          | store broker link
+                          | record KYC status
+                          | (does NOT re-verify;
+                          |  broker is source of
+                          |  truth for their KYC)
+                          v
+                    (broker linked; resume
+                     execution flow)
+
+
+==========================================================
+RE-KYC AND PERIODIC ATTESTATIONS
+==========================================================
+
+SEBI requires periodic re-KYC (low-risk: 10 yrs,
+medium: 8 yrs, high: 2 yrs). For Yesly:
+
+[YESLY BACKEND — cron]
+   |
+   | check kyc.last_verified_at
+   |
+   &lt;expiring within 30 days?&gt;
+       |                  |
+       YES                NO
+       |                  |
+       v                  (continue)
+   [Notification:
+    "Re-verify your KYC"]
+       |
+       v
+   [User completes re-KYC flow
+    — abbreviated version of Layer 1]
+       |
+       v
+   (update kyc.last_verified_at)
+
+
+==========================================================
+KYC FAILURE / RE-SUBMISSION
+==========================================================
+
+If KYC is rejected:
+- User is shown reason
+- Can correct and re-submit (PAN typo, etc.)
+- After 3 failed attempts, escalate to support
+  via grievance flow
+- Audit log captures every attempt
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li><strong>Two layers must not be conflated.</strong> HoA's RIA KYC and the broker's KYC are separate legal events. They may use overlapping data (PAN, Aadhaar) but are tracked independently.</li>
+      <li><strong>Open question on Tier 1 KYC:</strong> diagram assumes Tier 2 trigger; can move to Tier 1 with no architectural change. Compliance to adjudicate.</li>
+      <li>KYC vendor selection deferred (Digio / IDfy / Hyperverge). Pricing varies by volume; integration effort comparable.</li>
+      <li>V1 deep-link path leaves Yesly blind to broker KYC. Broker is source of truth.</li>
+      <li>V1.5 broker linking is OAuth-style. Yesly never sees broker KYC documents — only a "linked" status.</li>
+      <li>Re-KYC is a real recurring obligation. Cron-driven nudge starts 30 days before expiry.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 12: DPDP + GRIEVANCE ============ -->
+
+<section id="chart-12" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 12 · Compliance</div>
+    <h1>DPDP Data Subject Rights &amp; Grievance Redressal</h1>
+    <p class="lede">Combined chart because both are user-initiated, legally mandated, SLA-bound workflows with similar shape: user request → triage → resolution → audit.</p>
+  </div>
+
+  <pre class="ascii-chart">==========================================================
+PART A: DPDP DATA SUBJECT RIGHTS
+==========================================================
+
+Indian DPDP Act 2023 grants users four rights:
+1. RIGHT TO ACCESS (download my data)
+2. RIGHT TO CORRECTION (fix my data)
+3. RIGHT TO ERASURE (delete my data)
+4. RIGHT TO GRIEVANCE REDRESSAL (covered in Part B)
+
+All four require user-facing UI surfaces in v1.
+
+
+A1. ACCESS — "Download my data"
+================================
+
+[USER]
+   |
+   | Settings --&gt; Privacy --&gt; Download my data
+   v
+[YESLY APP]
+   |
+   | POST /dpdp/export-request
+   v
+[YESLY BACKEND]
+   |
+   | create export job, state = PENDING
+   | audit event: export_requested
+   |
+   | (Async worker picks up job)
+   v
+[ASYNC WORKER]
+   |
+   | gathers user data from:
+   |   - users, profile, household
+   |   - all plans (PDFs + structured)
+   |   - all financial data
+   |   - portfolio history
+   |   - notifications history
+   |   - audit events relevant to user
+   |   - consent records
+   |
+   | packages as JSON + included PDFs
+   |   in a zip archive
+   |
+   | uploads to short-lived signed URL
+   v
+[YESLY BACKEND]
+   |
+   | mark job COMPLETED
+   | email user with download link
+   | (link expires in 72 hours)
+   | audit event: export_delivered
+   v
+[USER]
+   |
+   | downloads archive
+   v
+[YESLY BACKEND]
+   |
+   | log download event
+   | (archive auto-deletes after 72 hrs
+   |  unless re-requested)
+
+SLA target: 30 days per DPDP. Realistic: 24-48 hrs.
+
+
+A2. CORRECTION — "Fix my data"
+================================
+
+[USER]
+   |
+   | Settings --&gt; Privacy --&gt; Correct my data
+   v
+[YESLY APP]
+   |
+   | shows editable fields where allowed
+   | (most profile fields user-editable already)
+   v
+[USER]
+   |
+   | for self-correctable: edits and saves
+   | for non-self-correctable: raises request
+   v
+[YESLY BACKEND]
+   |
+   | applies edit OR creates correction ticket
+   | audit event: correction_applied / requested
+   |
+   | if correction affects PLAN data:
+   |   trigger plan regeneration if user opts
+   |
+   (Non-self-correctable items: KYC data,
+    transaction history, audit events.
+    These require admin-mediated correction
+    via grievance flow)
+
+
+A3. ERASURE — "Delete my account / data"
+==========================================
+
+Conflict: SEBI RIA requires 5-yr retention of
+advisory records; DPDP grants erasure right.
+Resolution: ANONYMISE, do not delete.
+
+[USER]
+   |
+   | Settings --&gt; Privacy --&gt; Delete my account
+   v
+[YESLY APP]
+   |
+   | [Confirmation screen]
+   | "We will anonymise your data.
+   |  - Profile, contact, identifying info removed
+   |  - Financial plans and advisory records
+   |    retained in anonymised form for 5 years
+   |    (legally required)
+   |  - Subscriptions canceled
+   |  - You cannot recover this account"
+   v
+    &lt;user confirms?&gt; --NO--&gt; (cancel)
+                |
+                YES
+                v
+        [Final 30-day cooling-off notice]
+        "We will anonymise in 30 days. Sign in
+         before then to cancel."
+                |
+                v
+[YESLY BACKEND]
+   |
+   | state = ERASURE_PENDING
+   | scheduled for T+30 days
+   | email confirmation to user
+   |
+   (Day T+30, anonymisation runs)
+   v
+[ASYNC WORKER]
+   |
+   | replace user PII with anonymised token:
+   |   email --&gt; anon_xxx@yesly-anon.local
+   |   phone --&gt; NULL
+   |   name --&gt; "Anonymised User"
+   |   PAN, Aadhaar --&gt; deleted
+   |   bank details --&gt; deleted
+   |   avatar --&gt; default
+   |
+   | retain (anonymised) for SEBI:
+   |   plans (PDF + structured)
+   |   audit events
+   |   consent records
+   |   advisory interactions
+   |
+   | cancel active subscriptions via Razorpay
+   | revoke active AA consents
+   | invalidate auth tokens
+   v
+[YESLY BACKEND]
+   |
+   | state = ERASED
+   | audit event: account_anonymised
+   | (irreversible)
+
+
+==========================================================
+PART B: GRIEVANCE REDRESSAL
+==========================================================
+
+SEBI mandates a grievance redressal mechanism for
+RIAs. Specific requirements:
+- Clearly visible "Raise a complaint" surface
+- Defined SLAs for acknowledgment and resolution
+- Escalation path to SEBI SCORES portal
+- Periodic reporting to SEBI on complaint volumes
+
+[USER]
+   |
+   | "I have a problem" surface in app
+   v
+[YESLY APP]
+   |
+   | [Grievance intake form]
+   | Categories:
+   |   - Plan / advice quality
+   |   - Payment / refund
+   |   - Account access
+   |   - Data / privacy
+   |   - Advisor interaction
+   |   - Other
+   |
+   | Severity: low / medium / high
+   |
+   | Description + attachments
+   v
+[YESLY BACKEND]
+   |
+   | create grievance ticket
+   | state = OPEN
+   | audit event: grievance_raised
+   | acknowledgment email + in-app
+   |   ("We've received your complaint,
+   |    ticket #XYZ. We'll respond
+   |    within 7 days.")
+   |
+   v
+[ADMIN CONSOLE]
+   |
+   | grievance appears in queue
+   | (See Chart 13, surface #6)
+   v
+[HOA TEAM MEMBER]
+   |
+   | reviews ticket
+   | assigns owner
+   | proposes resolution
+   v
+[YESLY BACKEND]
+   |
+   | record proposal
+   | state = AWAITING_USER_RESPONSE
+   v
+[YESLY APP]
+   |
+   | [Notification: resolution proposed]
+   v
+[USER]
+   |
+   | reviews resolution
+   | accepts or escalates
+   v
+    &lt;user satisfied?&gt;
+        |               |
+        YES             NO
+        |               |
+        v               v
+   state = CLOSED   [Escalation options]
+   audit event:           |
+   grievance_resolved     v
+                    Option 1: Internal
+                              escalation
+                              (senior advisor)
+                    Option 2: SEBI SCORES
+                              portal
+                    Option 3: Ombudsman
+                              (per SEBI rules)
+                          |
+                          v
+                    (External regulator
+                     takes over; Yesly
+                     supports investigation
+                     with audit log + records)
+
+
+SLA TRACKING (system-enforced)
+==============================
+
+[YESLY BACKEND — cron, hourly]
+   |
+   | for each OPEN grievance:
+   |   check elapsed time vs SLA
+   |
+   |   T+24h, not ack'd --&gt; escalate to manager
+   |   T+7d, not resolved --&gt; escalate to senior
+   |   T+15d, not resolved --&gt; flag for SEBI report
+   |
+   | audit log captures every state change
+
+
+PERIODIC SEBI REPORTING
+========================
+
+[YESLY BACKEND — monthly]
+   |
+   | compile complaint statistics:
+   |   - total received
+   |   - by category
+   |   - resolved within SLA
+   |   - escalated to SCORES
+   |   - average resolution time
+   |
+   | export report for HoA compliance team
+   | to submit to SEBI (manual submission
+   |   to SCORES; not automated)
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li>Three DPDP rights + grievance = four user-initiated surfaces. All four must exist in v1. Skipping any is a regulatory exposure.</li>
+      <li><strong>Erasure resolution = anonymise.</strong> Hard-delete would violate SEBI's 5-yr retention. Anonymise-don't-delete is the industry-standard reconciliation.</li>
+      <li>30-day cooling-off on erasure prevents impulse deletion and aligns with DPDP's "right to withdraw."</li>
+      <li><strong>Grievance SLA enforcement is automated.</strong> Escalations trigger via cron, not human chasing. SEBI auditors will check this.</li>
+      <li>SEBI SCORES submission is manual. HoA compliance team submits — Yesly exports the data.</li>
+      <li>All four flows write to the immutable audit trail per Chart 10.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============ CHART 13: INTERNAL ADMIN ============ -->
+
+<section id="chart-13" class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Chart 13 · Internal Tooling</div>
+    <h1>Internal HoA Admin Console</h1>
+    <p class="lede">Often dismissed as "just CRUD." It is not. The admin console is the operational backbone of Yesly. Seven distinct surfaces, four distinct user roles, each with its own permissions.</p>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-label">Quoting risk</div>
+    <p>This is the chart most agencies under-quote. Including it explicitly is the primary defence. Estimated honest scope: 4–6 engineering weeks for v1. Most agencies will quote 1–2.</p>
+  </div>
+
+  <pre class="ascii-chart">==========================================================
+USER ROLES
+==========================================================
+
+ROLE 1: Analyst
+- Authors ideas / baskets / plans
+- Reviews user state for context
+- Cannot approve own ideas
+
+ROLE 2: Compliance Reviewer
+- Reviews and approves ideas
+- Audits advisory output
+- Searches audit logs
+- Cannot author ideas
+
+ROLE 3: Support
+- Looks up users
+- Processes refunds within thresholds
+- Handles grievance tickets
+- Cannot author ideas or modify financial data
+
+ROLE 4: Admin / Engineer
+- All surfaces above
+- Plan / assumption version management
+- System configuration
+- Cannot edit audit log (no one can)
+
+
+==========================================================
+SURFACE 1: IDEA / BASKET PUBLISHING
+==========================================================
+
+ACTOR: Analyst
+
+   [Admin Console — Ideas]
+        |
+        v
+   [New Idea / Basket form]
+   - Thesis
+   - Constituents (ISIN + weight)
+   - Risk classification
+   - Suitability criteria
+   - Source data references
+   - Disclosures
+        |
+        v
+   [Save as draft] OR [Submit for review]
+        |
+        v
+   (If Submit:)
+        |
+        v
+   (System: routes to Compliance queue)
+        |
+        v
+   audit event: idea_submitted
+
+
+==========================================================
+SURFACE 2: COMPLIANCE REVIEW QUEUE
+==========================================================
+
+ACTOR: Compliance Reviewer
+
+   [Admin Console — Review Queue]
+        |
+        v
+   [List of items awaiting review]
+   - Ideas drafted by analysts
+   - Plan templates with changes
+   - User correction requests
+        |
+        v
+   [Open item]
+        |
+        v
+   [Review screen]
+   - Full content
+   - Source data
+   - SEBI checklist
+        |
+        v
+   &lt;approve / reject / request changes&gt;
+        |
+        v
+   audit event: review_decision
+        |
+        v
+   (If approve: idea state --&gt; APPROVED,
+    suitability matching begins per
+    Chart 6)
+        |
+        v
+   (If reject / changes: returns to
+    analyst with notes)
+
+
+==========================================================
+SURFACE 3: USER LOOKUP &amp; STATE INSPECTION
+==========================================================
+
+ACTOR: Support, Admin
+
+   [Admin Console — User Search]
+        |
+        v
+   [Search by email / phone / user_id]
+        |
+        v
+   [User detail screen]
+   - Household composition
+   - Tier history (free --&gt; Tier 1 --&gt; ...)
+   - Plans owned
+   - Subscription state
+   - AA consent state
+   - KYC state
+   - Recent audit events
+   - Support ticket history
+        |
+        v
+   Actions allowed (role-gated):
+   - Send password reset (Support+)
+   - Adjust tier (Admin only — rare)
+   - Initiate refund (Support, within limit)
+   - View audit trail (Compliance, Admin)
+   - View plan PDFs (Support, Compliance, Admin)
+        |
+        v
+   audit event: user_state_accessed
+   (every view of sensitive data is logged)
+
+
+==========================================================
+SURFACE 4: REFUND / PAYMENT HANDLING
+==========================================================
+
+ACTOR: Support (within threshold), Admin (any)
+
+   [Admin Console — Payments]
+        |
+        v
+   [Search by payment_id / user_id]
+        |
+        v
+   [Payment detail]
+   - Amount, date, method
+   - Razorpay reference
+   - Linked plan / subscription
+        |
+        v
+   [Initiate refund]
+        |
+        v
+   &lt;amount within Support limit?&gt;
+       |                  |
+       YES                NO
+       |                  |
+       v                  v
+   process            escalate to Admin
+   immediately
+        |
+        v
+   (See Chart 8: refund flow)
+        |
+        v
+   audit event: refund_processed
+
+
+==========================================================
+SURFACE 5: PLAN / ASSUMPTION VERSION MANAGEMENT
+==========================================================
+
+ACTOR: Admin only
+
+   [Admin Console — Engine Config]
+        |
+        v
+   [Assumption Sets]
+   - Active set: v2026.Q2
+   - Equity return: 11%
+   - Debt return: 7%
+   - Expense inflation: 6%
+   - (... ~14 assumptions ...)
+        |
+        v
+   [Create new assumption set]
+        |
+        v
+   [Edit values, attach rationale]
+        |
+        v
+   [Submit for review]
+   (routes to Compliance — Surface 2)
+        |
+        v
+   (If approved, set becomes ACTIVE)
+        |
+        v
+   &lt;regenerate existing plans?&gt;
+       |                  |
+       YES                NO
+       |                  |
+       v                  v
+   trigger async    only future plans
+   regen for all    use new set;
+   active plans     existing locked
+                    to their original
+                    assumption set
+        |
+        v
+   audit event: assumption_set_activated
+
+
+==========================================================
+SURFACE 6: GRIEVANCE / SUPPORT TICKET HANDLING
+==========================================================
+
+ACTOR: Support, Compliance (for escalations)
+
+   [Admin Console — Grievances]
+        |
+        v
+   [Ticket queue]
+   - Filter by status, category, SLA risk
+        |
+        v
+   [Open ticket]
+        |
+        v
+   [Ticket detail]
+   - User info
+   - Complaint text
+   - Attachments
+   - SLA timer
+   - History of interactions
+        |
+        v
+   Actions:
+   - Add internal note
+   - Propose resolution to user
+   - Escalate (to compliance, senior)
+   - Close ticket
+        |
+        v
+   (See Chart 12, Part B)
+        |
+        v
+   audit event: ticket_action
+
+
+==========================================================
+SURFACE 7: AUDIT LOG SEARCH
+==========================================================
+
+ACTOR: Compliance, Admin
+
+   [Admin Console — Audit]
+        |
+        v
+   [Search interface]
+   - By user
+   - By event type
+   - By date range
+   - By actor
+   - By category
+        |
+        v
+   [Results list]
+        |
+        v
+   [Event detail]
+   - Full payload
+   - Hash verification
+   - Linked events
+        |
+        v
+   [Export to CSV / PDF]
+   (for SEBI inspection requests)
+        |
+        v
+   audit event: audit_log_accessed
+   (yes, accessing the audit log is
+    itself audited — by design)
+  </pre>
+
+  <div class="notes-section">
+    <h3>Notes</h3>
+    <ul>
+      <li><strong>Seven surfaces, four roles.</strong> Role-gating is enforced at the API layer, not just UI hiding.</li>
+      <li>Why most agencies under-quote this: underestimate suitability matching logic in Surface 1; don't account for SLA tracking in Surface 6; treat audit log search as "just a query" — it's a UI handling large datasets, filtering, export; forget Surface 5 (assumption version management) entirely; skip role-gating until late (compliance failure).</li>
+      <li>The console is a web app, separate from the yeslifers-web property (which lives on Supabase). The Yesly admin console runs on the same AWS stack as Yesly's API backend. Auth via Cognito, role-gated.</li>
+      <li>SEBI inspection often involves "show me what your analysts approved last quarter." Surfaces 2 and 7 together must answer this in minutes, not days.</li>
+    </ul>
+  </div>
+
+  <hr class="ornament">
+
+  <p class="muted" style="text-align: center; font-style: italic; font-size: 14px;">End of charts.</p>
+
+</section>
+
+</main>
+
+<script>
+(function() {
+  try {
+    const links = document.querySelectorAll('nav.sidebar-nav a');
+    const pages = document.querySelectorAll('section.page');
+
+    function activate(target) {
+      try {
+        pages.forEach(function(p) {
+          p.classList.toggle('active', p.id === target);
+        });
+        links.forEach(function(l) {
+          l.classList.toggle('active', l.getAttribute('data-target') === target);
+        });
+        const main = document.querySelector('main.content');
+        if (main && main.scrollTo) main.scrollTo(0, 0);
+        if (window.scrollTo) window.scrollTo(0, 0);
+      } catch (e) { /* swallow, navigation still works visually */ }
+    }
+
+    links.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = this.getAttribute('data-target');
+        activate(target);
+      });
+    });
+
+    // Handle direct URL hash on load — wrapped because iframe sandboxes
+    // sometimes throw on location.hash access
+    try {
+      const initialHash = (window.location.hash || '').replace('#', '');
+      if (initialHash) {
+        const matching = Array.from(links).find(function(l) {
+          return l.getAttribute('data-target') === initialHash;
+        });
+        if (matching) activate(initialHash);
+      }
+    } catch (e) { /* ignore */ }
+  } catch (e) {
+    // Even if script setup fails, the static HTML still renders all pages
+    // (CSS will hide non-active ones, but they remain in DOM)
+  }
+})();
+</script>
+
+</body>
+</html>
