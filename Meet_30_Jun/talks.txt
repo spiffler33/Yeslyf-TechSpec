@@ -1,0 +1,534 @@
+0:02 - Vatsal Parikh
+Hey guys, I'm very, very sorry. I'm extremely sorry. No problem, but sir. Sorry, sorry, guys. I just shared something with you. If that comes up, but let's go ahead. Yeah.
+
+0:17 - Eshani Kumbhani
+So, just a disclaimer: we don't work on WhatsApp in the company. So, every time you send me a document, I just put it on our folder. So, I'll just ask.
+
+0:30 - Vatsal Parikh
+I'm sorry. Yeah. Shall I shall I share it with no no I'll do it.
+
+0:35 - Eshani Kumbhani
+I'll do it. So it's an HTML file, correct? Yeah. Yeah yeah yeah.
+
+0:39 - Vatsal Parikh
+It's actually a link to okay. Okay.
+
+0:42 - Eshani Kumbhani
+It's a GitHub link.
+
+0:43 - Vatsal Parikh
+Yeah. Yeah. Okay.
+
+0:45 - Eshani Kumbhani
+So I have that now. I'm just sharing it with the team. So I'll just sort of bridge the context a little bit and then we can keep it flowing. So, the team members on call, Sahil and Saquib. Sahil is a full stack developer, and Saquib our engineering lead. So, they have assessed all the information over a period of time. They were also the team on call with Gaurav last time. And what I have set up as a rough agenda for this call is that perhaps just as an FYI, we revisit the few questions that we had of your team on that call. That's number one. Just as an FYI, so you know from where we are coming. Second is that we have the document that you shared with us yesterday.
+
+1:45 - Vatsal Parikh
+And this keeps getting refined. So this is not the final down, but I just wanted to sort of share it just to.
+
+1:51 - Eshani Kumbhani
+just to gauge what you guys think about it and what is missing what's not missing just to kind of speed up the part of us sharing information with you that that's all sorry yeah no that makes sense and in fact we have taken the we the threads from there from whatever you're sharing and we've also gone about uh the team has gone about and made a document that sort of converts this into the kind of specification that we need at our end So we're sort of using your document to bridge the gaps that are getting covered in the document.
+
+2:28 - Unidentified Speaker
+Okay.
+
+2:29 - Vatsal Parikh
+Cool.
+
+2:29 - Eshani Kumbhani
+So I'll hand it over to the team. First, we will just FYI, like I said, quickly address what is it that we talked to Gaurav about. And then we'll hand it back to you to just walk us through whatever you are putting, your thoughts, how you're sharing them, what all you've covered, and we can. Start asking questions from there about.
+
+2:49 - Vatsal Parikh
+Cool. Thank you, guys. Thanks a lot for your patience.
+
+2:55 - Eshani Kumbhani
+No problem. So, guys, you all want to take this over? It asked, like, just quickly revisit that meeting.
+
+3:06 - Unidentified Speaker
+Yeah, sure.
+
+3:08 - Saquib Ansari
+So, in the last meeting, I we have discussed that there there will not be any tier four that was confirmed by Gaurav. And then in the first three tiers basically tier zero and tier one and two and three. So there were some basic API enhancement was supposed to give us by Gaurav. And also, we have discussed about the journey of the tier one and tier two. So, in journey one, we are just collecting the data of the user. And in tier two, we are just assessing their basically we have created their power basic in our basic information. In tier two, we are just managing their assets and their information after receiving that. And in tier three, we are just giving you them the better solution about that, what exactly will be, and who will be managing all of those things. Yes, I'll if you want to add something, add.
+
+4:16 - Sahil S
+Yeah, and with that, we have asked about the specific stack implementation where we have addressed the issues like basically we have able to see the eighth container which you have mentioned which includes the CMS and CRM and how you how do you see this platform in terms of Martech and what actual engine why it is used and when it is it will be used and basically the data points which we will get from the actual engine something with something like that we have asked to Gaul. So basically, just kind of the things the doubts which we have asked. So yeah, so best. What I prefer as what we prefer it, it is best if you just walk out the full documentation from your end. So mean the time or after your explanation, we can have that clarity and we can ask you the question that is fully aligned with this.
+
+5:21 - Vatsal Parikh
+Can we do one thing? Can one of you all just click on the link that I shared and we and like sort of share the screen? And I'll try to basically address it because I know that having these conversations without having an artifact of sorts or having a visualization in front can have a lot of back and forth. And my whole point about putting together this documentation. Is that y'all get a very black and white view in terms of what is being built. What is the data model that we have? Where does admin come in? Where does compliance come in?
+
+6:04 - Unidentified Speaker
+And where do external APIs sort of come in?
+
+6:08 - Vatsal Parikh
+If you can just put that up, the link is on the shared, and then we go through it.
+
+6:21 - Vatsal Parikh
+Okay, so if you just go down, just scroll one little bit. So, this is the very first part which Saquib, you spoke about.
+
+6:32 - Vatsal Parikh
+Maybe this gives you a much better idea of what is the meaning of what Gaurav may have mentioned. This gives you a sense.
+
+6:45 - Vatsal Parikh
+Right. And the and the tier one, two, and three is there. And then one plus and two plus means from there onwards, one plus everything, two plus everything. It should probably be the other way around, but uh it's one and the same as far as when we go through it. Now, if you go down, what I'm trying to do over here is I've taken this the fig. So basically, we'll have a cold funnel and a warm funnel. But mostly it's all going to be about the warm funnel. The warm funnel is a community where a pledge and then they sort of come in because we're building a community first, and then we'll drop the app. So the efforts from now until gets dropped is building a community. And so people who are in the community become the warm funnel. And once the app is dropped, it becomes a cold funnel, which is all well and good. And we can just sort of move ahead from there. But what I'm trying to do is give you guys as much information in terms of where what comes in. So now, if you go further lower, what I'm going to do is I'm going to have a screen on the left which is what is going to be equal to the figma. So ye exact ho jaga, where the figma comes on the left, on the right comes. Things like what is the purpose of this page? What is the user doing over here? If there is any external API used, input, output, what is stored? If you click on the data model compliance admin, those things on the bottom, they will show you what is the overall schema that we are kind of working with. And Eshani, I'm sorry, I know you asked about this, but I haven't shared the Excel sheet, but I will share this Excel sheet right after this call, maybe along the call. A new user flow a la part, which kind of gives you the sense. But effectively, the new user flow spreadsheet should be equal to the Figma, should be equal to this page. And I've kind of said this across the organization that this piece, what we're going to share, this thing which we're going to share with you, will be equal to the Figma. Everyone will be fully understood exactly what we're going to get out of this. So maybe that helps you guys in terms of what is the expectation. So you can keep scrolling on this one, and we don't need to go through this whole talk. But what I want from you guys is: are you happy with what you see? So if you go a few levels down, okay, you can maybe wait at this one. Now, here, click on the data model part for, let's say, on the bottom, which tells you what is the kind of schema that we are thinking of And what goes there?
+
+9:37 - Vatsal Parikh
+Again, you can go back. Similarly, there is admin. Similarly, there is compliance.
+
+9:45 - Vatsal Parikh
+my back is not very good.
+
+9:52 - Vatsal Parikh
+It's fine. It doesn't matter. I mean, you guys may anyways want to look at it because this is not final, right? This is we are we are not very far. But then similarly, you see there is also external API over there. Similarly, you see that there is also where this algorithm comes into play.
+
+10:12 - Vatsal Parikh
+Take anything, yeah, take anything.
+
+10:17 - Vatsal Parikh
+So, there will only be one thing that will come from us, which is this doc and all any supporting paraphernalia, including the Figma, including any calculation, Excel sheets, or Python files, et cetera, so that you have the entire pack. Does this help you?
+
+10:41 - Vatsal Parikh
+And we've already given you the technical architecture. And this also connects to that, I mean, it comes from the technical architecture.
+
+10:57 - Vatsal Parikh
+So Figma, each Figma page, what is the input, output, purpose, external API, data piece of that page for each of those pages?
+
+11:24 - Vatsal Parikh
+You can say you can say something. Is this AI slop or is this useful?
+
+11:31 - Eshani Kumbhani
+No, no, they're just analyzing everything.
+
+11:36 - Saquib Ansari
+Okay, so basically, I guess going through this. So, as per your understanding, I just got to know. So, basically, you mean to say that you already have mapped what exactly will come on this page. In terms of the external APIs or any third-party APIs. So, the API integration part that you mentioned, I don't think that is very pretty much clear at this point of time because there might be some kind of changes that can happen. So, that needs to be incorporated properly with the help of all the tables. And are these keywords going to be? Be consistent and the same.
+
+12:16 - Vatsal Parikh
+Sure, sure. No, change them. I this is suggestion, but of course, you maintain the database schema, go for it. Yeah.
+
+12:26 - Saquib Ansari
+Yeah. And then our next one is come to. You already showcase that what is going to be the parameter and the foreign key. So that totally can be changable as you mentioned. So the question then will come. So add.
+
+12:45 - Saquib Ansari
+what point basically that external API will use their data and what kind of structures basically will be there, kind of a JSON format if there is a JSON. So, what exactly will be fine, fine, okay, fine?
+
+12:59 - Vatsal Parikh
+So, what I what I'm hearing from you is: internal stuff, you're sounding okay with the external stuff. You want to know what is the that we're pulling from each of these external APIs. So the brown button should be clickable, which basically tells you this is what we are pulling from the external API. Fair.
+
+13:19 - Unidentified Speaker
+Yes.
+
+13:20 - Saquib Ansari
+Let me go through any of them.
+
+13:23 - Vatsal Parikh
+So none of them are as of now. No, no, they are not. They are not. Right now, I've just said external API. That's all. But what you are saying, if I've understood it correctly, you can correct me if I'm wrong. What you're saying is that brown button also I can click and I can say that this is what is the field from the external API that is required over here. That is what is the next step that you would want out of this.
+
+13:47 - Saquib Ansari
+That will make sense to even for this particular API that so we know that inside one API, we know there will be of responses. So we will not be sure which response we'll have to use at this stage. So that will be really helpful as you mentioned that you are going to completely.
+
+14:03 - Vatsal Parikh
+Yeah. No, I understand. I this requires a fair bit of research on that one. I understand.
+
+14:07 - Unidentified Speaker
+Yeah.
+
+14:12 - Saquib Ansari
+And then yes, I'll go ahead.
+
+14:15 - Sahil S
+So basically, you will map out the both the HOA engine data and the external third-party integration which we are doing. Will be there in this particular thing, right?
+
+14:27 - Vatsal Parikh
+Yeah, yeah. The only thing that I will give you a little bit later is you see this, you see the green button. So, basically, go a little bit higher. Not this one, not the payroll. You see that green? No, no. Go back. You see that our system. Yeah. Our system. Here it is fine.
+
+14:44 - Unidentified Speaker
+Here is this audit and consent. But which is fine.
+
+14:49 - Vatsal Parikh
+You these are the kind of things which is again going back to your Martech point. But similarly, there will be another one. Let me see.
+
+14:59 - Vatsal Parikh
+Of delivery. No, no, keep going.
+
+15:03 - Vatsal Parikh
+I think Upara I got if you can go a little bit higher, there was financial plan-related stuff. Let's see this one. Let's see this one, clarity insight. Clarity inside. Ha ha ha. This one. If you just click on the retail planning engine, yeah. Now, if you click on see this, this is the way in which the algorithm basically works right now. Now, the input and output I'm going to give you, the actual Python code of the algorithm for the input and the output to come out is something which might take me a little bit of time to come back with. It's not so difficult again with the financial engine, the financial planning, and the investment plan, but the asset allocation piece. Is non-trivial, and that might take me a little bit of time, which is okay because your front end will be developed, your back end will be developed in terms of the database schema. The actual calculation that is happening is the part which will take me a little bit of time to come up with. But other than that, I can give you everything. So, there's a fair bit that I'm providing.
+
+16:05 - Vatsal Parikh
+And you have the technical architecture doc as well from earlier.
+
+16:12 - Saquib Ansari
+Yes, so that will yeah, definitely that will be helpful as you mentioned that what exactly will be the input/output and that the basically the structure basically we will require so that we will be able to even map uh what exactly will come at what point and from those sources what exactly we will have to pick. Because we will be having so many data, then it will be very a confusion state will at that point.
+
+16:39 - Vatsal Parikh
+of course. Of course. That your database schema is not be trivial. It's going to be actually pretty deep because you're have things like all of this, what is there on this sheet. But additionally, you're have financial securities. Any security might have its own, like financial security might have their own class. And then inside those, you will have each of those. So I understand this. Yeah.
+
+17:08 - Vatsal Parikh
+But to sum up so far, and then we can keep going, but sum up so far. One is external APIs. You want to know what you want from those external. So those drawn buttons become clickable and they basically tell you what is that we're pulling from those APIs. That's one. And that's it, right? Abhi Arkush hai at this point So far, so far. We talking, but so far, Am I missing anything? That's all you want from this document.
+
+17:35 - Saquib Ansari
+Yes, I think that will helpful. And also, if you can map all those external APIs data with the data structure as we see the table which you did.
+
+17:46 - Vatsal Parikh
+Of course, of course. Right now, the data model is only internal.
+
+17:49 - Sahil S
+uh external api is not there any yeah yeah 100 that'll add that'll that'll surely come in yeah yeah yes do you have any question to add here uh as of now no but I aim to uh just jump it to the next question which is not related to this uh shall I yeah yeah go for it yeah yeah so uh just just wanted to understand this is as we know this is a mobile first application right so are we just uh visualizing some marketing website also or this will be the only web app only jack can you tell me a bit more about it I'm very interested to hear what you have to say can you tell me a bit more what do you mean exactly by that so basically the mode or the the core user is which will run the mobile application right So those who want to make their financial planning, they just need to download the application and they can go from that particular thing. Second part is if the people who don't want to download the application, they can source through from the website itself. So as making this mobile application, NetF using React Network, so we can able to convert this particular application to the website also. So, do we do we are also creating this thing or the marketing website, which is there in the SL architecture, which we have given first. Over there, it is mentioning the second container, a marketing website. So, do we creating the other website which is not?
+
+19:30 - Vatsal Parikh
+not related to the app or just the marketing web or doing the marketing so no no you're right I think I think that that is a documentation error uh in that sense um it it is um there is no marketing web uh I think maybe maybe that's a typo or something sort many website aiki hai is the same website and the same app in that sense when I probably mean marketing web, I'm basically meaning things like XPanel and Twilio and stuff like that, whatever CRM stuff, which kind of is associated with the admin piece. Does that answer your question, or am I talking garbage?
+
+20:13 - Sahil S
+So basically, let me rephrase this to the better understanding. So the question is: how do you visualize this mart tech versus the admin console and plus the advisory console? So do we have the admin console different from the advisory console? And the market tech is already different, right?
+
+20:33 - Vatsal Parikh
+Wait, wait, wait.
+
+20:35 - Eshani Kumbhani
+Okay. So basically, there is a a main app, right, a React Native app, which is this project. Now, there is also an entire aspect of marketing. And we have to also, there are other things like CRM and CMS. Okay. At the end of the day, you as a client will have to tell us where all of these systems lie and what needs to get connected with this piece. When we had a chat with your team last time, they were alluding to a marketing website. Then they were alluding to a CRM. Then they were alluding to an advisor console. Then they were also alluding to an admin console. Right now, admin console is related to this app. Is it related to the CMS? So these different pieces, right? I understand.
+
+21:26 - Vatsal Parikh
+I understand.
+
+21:27 - Eshani Kumbhani
+Technology. How are you looking at them coming together?
+
+21:31 - Unidentified Speaker
+Correct.
+
+21:32 - Vatsal Parikh
+fair, fair. So, even on this one, if you click on the admin tab, it actually kind of alludes few of those points. Not fully go into the Martech piece at all in this place. How do we do this?
+
+21:50 - Eshani Kumbhani
+So, what I would suggest is you keep Martech aside because Martech is a complete project in itself. Okay, now. When we talk about Maltech, essentially there's a see the only thing is the containers where the information gets stored from this app that needs to be managed correctly. So is the data from this app going and sitting in a CMS? Is it going and sitting in a CRM directly? How is the team going to manage that? But Maltech is what you would do with that data.
+
+22:22 - Vatsal Parikh
+Audit. Yes, exactly. Absolutely. Yeah.
+
+22:25 - Eshani Kumbhani
+Now, just stay with me. Now, there are different ways that you would envision this as a platform. Okay, now you might want, and this is an intent requirement that we believe we actually must think about. Okay, say your martech data, like, okay, first let's keep the word martec aside. Received leads in my app. I have stored them as a platform. I'm storing them somewhere. Okay, now as a user of that platform, admin user, how am I accessing this data? Is it raw data sitting in my database, or is it coming into a CRM from where I can take related activities that could mean pure marketing on a website, or it could mean pure marketing on the app?
+
+23:13 - Vatsal Parikh
+Got it. Got it.
+
+23:17 - Vatsal Parikh
+So, Eshani, correct me if I'm wrong, and then I'm just going to sort of what I think at this point in time, and we can probably have a bit of a back and forth on this. In my mind, the app saves stuff on a database. We work through that in some way and push it back into the app.
+
+23:42 - Eshani Kumbhani
+I mean, yeah, that's one way of doing it. The question is, what do you want as an outcome? Because see, the minute you change a service, right, like later on, okay, any integration that you change later on, it affects your server as well.
+
+23:57 - Vatsal Parikh
+Okay.
+
+23:59 - Eshani Kumbhani
+So this is one aspect of it, right, which we have vocalized today, which is, tell us from third-party APIs, what all you want to integrate. Also, think of the larger infrastructure you're trying to build as a platform. Because they did talk about the marketing aspect of the website, like blogs, right? Now, as a platform, you might put that into the app as well.
+
+24:29 - Unidentified Speaker
+Right.
+
+24:30 - Eshani Kumbhani
+That's community, that's education. Right. So I think that holistic view has. See we are okay to not talk about it because it's technical part of our project okay but it would be very good good to think about all of this right now absolutely yeah so where is your core see also what lot of projects get wrong is they try and create too many databases for the same sort similar activities because in the beginning it is easy to do so correct okay. So, when I say a website is being served by the CMS, a website will also have some lead integration, it will have a newsletter mechanism. Okay, now of people might not buy your services but they might tag into your newsletter. That means you have some long leads over there, right?
+
+25:31 - Vatsal Parikh
+Right, okay.
+
+25:36 - Eshani Kumbhani
+So, when you're looking leads funnel right now, you are looking purely at people who have interacted on the app. You are not looking at people who have interacted with Yes Lee as a platform.
+
+25:52 - Eshani Kumbhani
+There is also the advisor console, right? So, these words, they were talked about in meeting. So, we just feel like if you are able to crack this entire diagram of who talks to which service when, what are the roles of each of these services and pieces of technology, then it will really help us consolidate action right away.
+
+26:22 - Vatsal Parikh
+I understand. I understand. Yeah.
+
+26:27 - Vatsal Parikh
+Interesting. Okay.
+
+26:30 - Vatsal Parikh
+Okay, I'll be honest, we haven't thought deeply about this part at all.
+
+26:41 - Vatsal Parikh
+Do you have suggestions which could be considered?
+
+26:47 - Eshani Kumbhani
+Yeah, I see firstly, sure, we can just, I mean, we can tell you from our experience what these things can be, like, where are the things right like where where do all of these things go so one is that you have to agree on a crm give me an example like you want sfmc which is salesforce marketing cloud or you want something like net net core which is an indian similar aspect like sfmc what do you recommend we see a lot of these clients take over directly most a lot of clients take SFMC. Okay, now the thing with SFMC is right, it has its very unique way of identifying a difference between prospect and lead. Okay, so uh, it has stages. Uh, so there is prospecting, lead management, then what they call opportunity, tagging of opportunity to a lead or a prospect. There's a very defined way of working, SF Salesforce.
+
+27:52 - Vatsal Parikh
+And this applies to cold as well as someone who's already downloaded. Yeah, yeah.
+
+27:59 - Eshani Kumbhani
+Cold is prospect. That's the difference between prospect and lead. Prospect is somebody who you could have also reached out to and put into your funnel, basically. So, see, at the end of the day, there's going be heavy marketing and heavy sales activity related to this, right? Of course, yeah, even the protagonists of HOA, right? Like, they do a lot of LinkedIn presence. Yeah, so when people reach out to them and they receive a lead, where are they dumping that data?
+
+28:30 - Vatsal Parikh
+Got it.
+
+28:32 - Eshani Kumbhani
+Okay, so it needs to be an omni-channel lead manager, number one. From there onwards, you will say these are the top. 10 things we will do as action. We will do emailing, we will do messaging, we will do nudging on app, we will do discounting. That entire thing needs to be created. It's not mental model. Then Okay, I want this API from this CRM to hit the app so that this action can be taken.
+
+29:03 - Vatsal Parikh
+Now, that could be an action. What is an action taken on the app?
+
+29:08 - Eshani Kumbhani
+like nudges, right? At the end of the day, the funnel also recognizes guidance, people who have not picked up a plan, people who are still thinking about something.
+
+29:20 - Vatsal Parikh
+Notification.
+
+29:22 - Eshani Kumbhani
+Notification, nudges, reach outs, emails. So all marketing platforms, right? Got it. Maltech, what does Maltech really do? It helps you identify your essentially next best action as they fail, right?
+
+29:37 - Unidentified Speaker
+Understood. Understood. Okay.
+
+29:43 - Vatsal Parikh
+Okay. All understood. All understood. I would love it if you can have give me some ideas so that I have a closed form space in which work through it and come back to you on it. But I have understood your point. Can you just take one more step? And maybe a question to you also, Sahil. Anyway, in terms of what would be the what would be the format in which this whole circle works in terms of development.
+
+30:25 - Eshani Kumbhani
+In terms of development, so I'm saying what we can do with you is do an online brainstorm with you. You. Let's fix this piece first. I think what we can also do is give us the clarity that Fix this piece first. So exactly where the APIs are coming from, what data.
+
+30:45 - Eshani Kumbhani
+Then, because then your core project is ready.
+
+30:49 - Unidentified Speaker
+Okay.
+
+30:49 - Eshani Kumbhani
+Now there are other aspects of it which will also determine your DevOps. Okay. So that we can do, we can do like a workshop with you online. Okay. And say this pieces here. Admin panel means that You might say. So we'll do it like a brainstorm. First thing to crack in that is admin panel.
+
+31:16 - Unidentified Speaker
+Okay.
+
+31:17 - Eshani Kumbhani
+Then you might say, Muje specific advisor panel be built. So advisor panel ka kya use tier four mejata hai, lead wa bi sija chipadma chi.
+
+31:32 - Eshani Kumbhani
+It's the human advisory aspect, right? So, advisor panel me fir see that is again so a lot of these wealth management companies, right, they have specific RM modules, relationship manager models. Correct. So, advisor panel may see all of that is also important, right? Abhi, you have, say, four types of customers: tier one, tier two, tier three, tier four. Okay, correct. Customers, advisor panel me badnewala hai, yaya RM panel me badne wala hai. Okay, so that so that see all of this is what you're giving us to build, right? Is literally the front face.
+
+32:16 - Vatsal Parikh
+Right.
+
+32:16 - Eshani Kumbhani
+What are you going to do with all of this? How are you how are you managing all this data?
+
+32:21 - Unidentified Speaker
+Beautiful.
+
+32:22 - Vatsal Parikh
+Got it. Got it. Wow. Okay. Okay. Cool. Thank you very much. Yeah.
+
+32:33 - Unidentified Speaker
+Samadhi.
+
+32:35 - Vatsal Parikh
+Okay, fine. Let me say that this is one major open part. And this has to be solved. This has to be solved, of course. And I'll take this up and we do this workshop as well. Shall we do this workshop once we finished the external API thing as well?
+
+32:55 - Eshani Kumbhani
+Yes, yes, absolutely, because that is what we want.
+
+32:59 - Unidentified Speaker
+Great.
+
+33:00 - Eshani Kumbhani
+Okay, so I'm saying if you can give us regular connects every day for the next three days, okay, let's say first ambition is this, then I would say admin panel, then advisor panel, and then your what is the third one? Marketing mala, cheese. Okay. So we can take it in that order. Essentially, what we need to know is why are we going in that order? Ya sejo data ane wala apo ka integrate garnas.
+
+33:31 - Vatsal Parikh
+Minkya ova projects.
+
+33:33 - Eshani Kumbhani
+APIs will be like lying around like dead wires.
+
+33:38 - Vatsal Parikh
+Correct, of course. No, no, I've fully understood this. I think, like I said, right, I think we did not go as far as what to do with the marketing angle entirely as once the app is built. Fine. Thanks a lot. So, can I just say, daily, can we start Monday daily? And I'm happy to do like seven days daily, whatever fits for you guys. But Monday onwards, the only reason is to close this piece completely within the team. So this page has to be fully signed off by the whole team, by them.
+
+34:18 - Vatsal Parikh
+And external API part hogya hai. We are done. And then comes the next part, which is the whole marketing piece.
+
+34:26 - Eshani Kumbhani
+Yeah, yeah, yeah. So this Wednesday through Friday is for the stuff that external API stuff. That also from Monday, or can we do that from tomorrow?
+
+34:37 - Vatsal Parikh
+Let me do cleanup with the team now fully. Because I'll tell you what, this is great, and y'all can take a look at this. Because I'll tell you, there are a couple of things which are pending at our end. One is the whole tier three onwards, the tier three asset allocation piece has its own inputs and outputs, which is what we discussed literally today. What is that going to look like, Not even the algorithm, but what's the input and output going to look like, Now we are going to send this to the UI UX people for them to build that. Even if I don't have the UI UX, I can still prepare this particular doc where I can have the input and output and the external APIs that are required. A I want the team to be fully happy with exactly this piece on a tech perspective as well as the flow perspective. Three, I want to have the external APIs work done.
+
+35:31 - Vatsal Parikh
+To be able to get there, unless you already have done some amount of work on the external API space.
+
+35:39 - Vatsal Parikh
+This is what you will need from here. This is what you need from here. I'm very happy to pick up whatever you guys may have done. But if not, we do, like, I'll do the work and come back to you. Ki wo Brown will be clickable, and then you have that into the database model as well as. What is required on that page. I'll let the team answer this.
+
+35:57 - Eshani Kumbhani
+I'll let the team. I think they've also done some work, but how to manage this is all silence can take over from here.
+
+36:06 - Vatsal Parikh
+No, tell me what you guys prefer. Monday, see, we can do this in my mind because I will get a little bit more work done on this page, this doc itself, yeah, because I feel that tier three is not even in this doc.
+
+36:21 - Vatsal Parikh
+So that's the only part which I'm a little bit like, okay, we need to close this piece out. Now, I don't know, do you call this 80% or do you call this 40%? Abhijo hai.
+
+36:34 - Sahil S
+Yeah, so according to me, it's it's like a predict what you have did till now. Right. And we have got the almost a gist out of it, what you are trying to build in.
+
+36:46 - Vatsal Parikh
+Try to build.
+
+36:47 - Sahil S
+right what we have is that the two parts, yeah, two parts which the Eshani also mentioned. The first part is we don't know, for example, the FOI will just give you 10 data and the third-party data will you give you 20 data, but your app requires only five data. So, three from this, two from that, uh, how does the combination be worked to display uh into the uh this app first point, yeah, yeah, second point is. You have given the technical architecture, right? But what we feel that if we sort out the actual the thought, which is just like I've mentioned, so we don't know what what is the actual difference between the admin. Hello, I am audible.
+
+37:36 - Sahil S
+So we are not able to understand what is the actual difference between the advisory admin console or how your market. Start will be going to implement in this. So, because with that particular piece, it might be the chance that the architecture will be changed accordingly.
+
+37:53 - Unidentified Speaker
+Right.
+
+37:53 - Sahil S
+So, we are stuck in both just two parts.
+
+38:01 - Vatsal Parikh
+So, you're stuck in Excel API and Martech piece. That's what you're saying. So, no, both are those are with me only.
+
+38:12 - Sahil S
+let me come back Not only that, because in the first architecture which you have given, it's already mentioned the admin console will be there and the advisory console will be there, right?
+
+38:23 - Vatsal Parikh
+So, over here, admin console gives you a good idea about what the admin console is look like, Click on the admin piece, it shows what the admin console looks like, And the analyst part is the advisor part.
+
+38:46 - Vatsal Parikh
+Does this help, or if it doesn't help, you have me know?
+
+39:00 - Saquib Ansari
+So you are saying Mashad is admin console. You are referring to this section, right?
+
+39:10 - Vatsal Parikh
+Yes.
+
+39:25 - Saquib Ansari
+Yes, so I will mention that depending on this, because anyway that you are provide us all those information. So based on that, that architecture may get changed because the earlier architecture defines only the limited information which we had. So, based on that, architecture defines very well. But, anyways, that we are going to make the changes inside the third-party applications and those database mapping. So, that we also need to incorporate into architecture diagram because that architecture then will get different because right now we are one step ahead of those architectures.
+
+40:06 - Vatsal Parikh
+Fine, fine. So what do I what I'll do is when I finish this doc, I'll update the technical architecture again.
+
+40:15 - Saquib Ansari
+Yeah, that will be very helpful so that we will be having both updated architecture with this data documentation. So all will be in sync so that everybody will be on the same page.
+
+40:26 - Vatsal Parikh
+Yeah, 100%. I want to do exactly that. That when we start, we must have everybody, we are all on the same page. Fine. Yeah. So let me finish external API on this A D, let me update this anyways with whatever other pieces of Figma and Figma, not Figma, et cetera. Jahatak concept. At least 80% of this doc will be finished and it will be congruent to the Figma and the technical architecture piece.
+
+40:54 - Saquib Ansari
+Yeah, that will be very helpful for us.
+
+40:56 - Vatsal Parikh
+us and I'll and I'll get to 80% of that. 80% then Monday see we start going further deeper into it and we do martech this yeah that also works for us.
+
+41:08 - Saquib Ansari
+What do you think?
+
+41:18 - Sahil S
+So I am just carrying myself so basically this is the first architecture have given. So this is clearly aligned with what the second architecture or the second document given. So by the first question which was asked for you, this part, which is the marketing web and then will be a React on a website. So this part is not there, right? What do we need to create?
+
+41:45 - Vatsal Parikh
+Because it is uh that this is none of this has been done. You can accept it that nothing has been done over there. Fair, yeah.
+
+41:53 - Sahil S
+And we are also clear about uh this. The we are just making this uh this admin internal admin console, not this advisory. What do we or are we creating?
+
+42:04 - Vatsal Parikh
+They are the in my mind, in my mind, admin and advisory console are the same because admin has things like support, compliance. And admin, whereas advisory has things such as the analyst, whatever the analyst part is doing.
+
+42:19 - Sahil S
+Yeah.
+
+42:21 - Sahil S
+And okay, so basically, in a nutshell, this will be a purely mobile application. And for this, for advisory or the internal admin control, which will be a merger basically, and that will be in the in any of the technology, React or NextGIS, something like that, right?
+
+42:43 - Vatsal Parikh
+Yeah, yeah, yeah, that's okay. But so long as Woahzupa, that should be accessible from the desktop as well. Yeah, yeah, yeah, yeah.
+
+42:52 - Saquib Ansari
+So, yeah, yeah, go ahead.
+
+42:56 - Vatsal Parikh
+Yeah, one of those things, Naz, what's happen is so, think about it this way, right? When you give a sort of an asset allocation to someone, you are kind. Of looking at all the inputs that they give, right? So, whatever are the demographics and the amount of money that they have and the amount of investment that they have, all of those kind of go into a profile. There'll be different types of profiles for each of these different types of profiles. Let's say we'll come up with 12 or 16 or 20 types of profiles. Each of these types of profiles, there will be an asset allocation which will be given to them. Not just an asset allocation, it will also be key. This is your but then which of the equity stocks you should buy is also going to be given. Now, this thing will have to keep changing, right? So that's the advisory console as far as I'm concerned. But then there is the whole admin console, which is the support part, which is refunds and complaints and all that other stuff, which is which I've got on this one under admin, is all the other part. And then now, what we spoken today is the third part, which is the marketing web part.
+
+44:00 - Vatsal Parikh
+All the three, in my mind, are the same admin console, which is something which the firm handles, which is not what the client sees. Does that help?
+
+44:11 - Saquib Ansari
+Yeah, definitely.
+
+44:12 - Vatsal Parikh
+Okay.
+
+44:15 - Vatsal Parikh
+Awesome.
+
+44:17 - Saquib Ansari
+Yeah, so I will clear on all these things, right?
+
+44:19 - Unidentified Speaker
+So we'll get back as you are going to provide us all those information.
+
+44:23 - Saquib Ansari
+So based on that point, number four, we'll get clarity on the architecture diagram.
+
+44:28 - Unidentified Speaker
+Yeah, yeah.
+
+44:28 - Vatsal Parikh
+But if there's any, like as Eshani was saying, that you guys have already done some work, whatever you've done, tell me now. If you've done this work, share. Then I'll be like, okay, fine. This work is already done. Then I drop up on top of that. A, B, more importantly, see where you guys are coming from So I can be more targeted towards that.
+
+44:48 - Saquib Ansari
+Oh, yeah. So, Sahil, can you share that?
+
+44:56 - Sahil S
+Yeah, so basically what we have done, let me just share the screen first.
+
+45:05 - Sahil S
+Basically what we have done, based on your documentation, what we have understood basically this is a document which we have created. So anyone from the other side can able to anyone new in this project able to understand this, right? So the what we have usualized. Basically, the this mobile application.
+
+45:31 - Vatsal Parikh
+Can I can I can I say can I say can I just quickly say something? You may have made this on the back of the meeting. Fair.
+
+45:42 - Vatsal Parikh
+Maybe with this doc and this Figma, maybe you look at it a little bit differently now. Now?
+
+45:48 - Sahil S
+Yeah, yes, right. So basically, the first document which you have sent, which is the ASTA technology. So, from that perspective, we frankly speaking with doesn't understand anything. Not much, the bit, but this which you have sent just now. From that, we have able to understand the most of the part, what you are trying to build, and who is your core players. That's what we have mad again.
+
+46:18 - Vatsal Parikh
+So, can we have this exact point which you're coming up with right now? Once you've consumed what I've sent today, sorry, come back again. Can you come back you're showing me today, right now, once you've consumed what I shared with you today itself? Like what I shared with you today, So, why don't you change that so that when you come back to me, and maybe this will come Monday, maybe this will come Friday, then I might get a much more clearer idea of okay, fine, this is where you're coming from Saturday, Sunday, I can do a little bit more work. So, with Monday, Monday, when we speak, I will have a much targeted discussion with you.
+
+47:06 - Sahil S
+Yeah, that would be that.
+
+47:09 - Vatsal Parikh
+You use what I've given you today between today and tomorrow, and then Friday, let's speak once. Then Monday say proper calls we do. But Friday, we speak about exactly what you are going to show me right now.
+
+47:21 - Sahil S
+Yeah, sure.
+
+47:23 - Vatsal Parikh
+Sounds good?
+
+47:23 - Saquib Ansari
+Yeah, definitely. We will integrate and we will map whatever you have shared today. So we will also try to map with their previous architecture and with the current architecture. Also find some discrepancy, so also highlight that so we can discuss on Friday as well.
+
+47:40 - Vatsal Parikh
+Perfect. So, Friday, we speak again, and Monday onwards, we do clarity.
+
+47:47 - Saquib Ansari
+Great.
+
+47:50 - Vatsal Parikh
+Thank you, guys. Thanks a lot.
+
+47:52 - Eshani Kumbhani
+Thank you. Thank you.
+
+47:53 - Saquib Ansari
+Thanks for your patience, guys.
+
+47:54 - Vatsal Parikh
+See you. Bye.
+
+47:57 - Saquib Ansari
+Nice talking with you.
+
+47:58 - Sahil S
+Thank you.
+
