@@ -1,0 +1,172 @@
+With the changes made :
+
+
+Client Journey Sequence :
+Download app and open
+Login with email id / phone number
+Video 1 – Welcome and set expectations
+Input - 3 questions – where are you right now, how does money feel, what does success mean
+Output - Sample plan summary + downloadable full plan of Avtar
+Video 2 - explaining how having their own plan can change their life
+Input - Money journey, assets liquid, assets illiquid, liabilities
+Output – Clarity insight 1 – NW + War 2 – Projection 3 – Blindspots
+Video 3 – Encourage more data, introduce paywall
+Input – Life events / goals, income, expenses, insurances
+Output – Summary of inputs given – financial plan awaits at the other end of the PW
+Choose option and make payment
+Sign agreement 
+
+Option 1 Journey
+Message – congratulations on taking the next step, prep them for the document
+Output – Financial Plan – summary on screen and downloadable PDF
+Input – Sounds good, generate Action Plan (Or) Need changes
+Output – Give Action Plan (or) Encourage upgrade to speak to human advisor
+Video 5 – Harish - Now what to do next?
+Return to – Action Plan updates
+Periodic Nudges - list
+
+Option 2 Journey
+Video 4 (2) – Harish – great choice, explaining IP and AP logic
+Input AA or upload document
+Output – Financial Plan + IP – summary on screen and downloadable PDF
+Input – Sounds good, generate Action Plan (OR) Want some changes (fix appointment to speak to a human advisor)
+Output – Give AP (or) Speak and establish relationship
+Video 5 – Harish - Now what to do next?
+Return to – Action Plan updates
+Periodic Nudges - list
+
+Option 3 Journey
+Video 4 (3) – Harish – great choice, explaining IP and AP logic
+Input AA or upload document
+Output – Financial Plan + IP – summary on screen and downloadable PDF
+Input - Fix appointment to discuss the FP / IP and AP
+Video 5 – Harish - Now what to do next?
+Speak to my adviser always available on the side
+
+
+
+ Reference by chapter heading (these appear as literal headers in the doc):
+
+  ┌─────────────────────────────────────────────────────────────────────────┬──────────────────────────────────────┐
+  │                                 Change                                  │       Section heading to find        │
+  ├─────────────────────────────────────────────────────────────────────────┼──────────────────────────────────────┤
+  │ Pledge no longer mandatory pre-app gate                                 │ "Pledge and Ambience Decision"       │
+  ├─────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │ Community becomes a persistent in-app nudge, not forced exit-and-return │ "Community Access and Placement"           │
+  ├─────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │ Community exposure delayed until after initial app exploration          │ "Onboarding Strategy and Next Steps"       │
+  ├─────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │ Compliance review with Megha scheduled to confirm signing timing        │ "Legal and Compliance Scheduling"          │
+  ├─────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────┤
+  │ Decision tree to be finalized for developers                            │ "Decision Tree and Data Collection Timing" │
+  └─────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────┘
+
+  Yeslyf Meeting 04-07-2026 Transcript.docx
+
+  Reference by timestamp — speaker (search these in the doc):
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────────────────┐
+  │                                               Change                                               │   Timestamp anchor    │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────┤
+  │ Debate on cold-funnel order (community/pledge vs. video first)                                     │ 8:53 – Vatsal Parikh  │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────┤
+  │ "So there is no pledge and pledge complete... this needs to probably we need to drop this concept" │ 22:48 – Vatsal Parikh │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────┤
+  │ Megha compliance meeting scheduled                                                                 │ 26:16 – Harish Menon  │
+  └────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────────────────┘
+
+  Yeslyf Meeting 06-07-2026 Summary.docx
+
+  ┌──────────────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────┐
+  │                                Change                                │               Section heading to find                │
+  ├──────────────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────┤
+  │ Full client journey re-walked (download → login → video → 3          │ "Detailed app user flow and post-payment journeys"   │
+  │ questions → sample plan → …)                                         │                                                      │
+  ├────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ Video should move before the output reveal             │ "Video sequencing, scripting, and compliance/licensing concerns"   │
+  ├────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ Email delivery instead of device download              │ "Deliverable UX — download vs. email and in-app retention"         │
+  ├────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────┤
+  │ Pre/post-plan messaging split, format TBD              │ "Splitting Harish's content into pre- and post-plan messages" /    │
+  │                                                          │ "Messaging vs. format debate and timing"                         │
+  ├──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────┤
+  │ Tier definitions — no scheme names (T1) vs named         │ "Definition of action-plan tiers (options one–three)"            │
+  │ products (T2) vs full-service (T3)                       │                                                                  │
+  ├──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────┤
+  │ IP must conform to FP allocation                         │ "Alignment of investment plan with financial plan"               │
+  ├──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────┤
+  │ AA/FINVU competitor benchmark (single OTP, 1-month       │ "Account aggregator (AA) consent and data discovery"             │
+  │ storage, 12-month validity, 45 fetches/month)            │                                                                  │
+  ├──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────┤
+  │ RIA/FIU licensing still open                             │ "Compliance and licensing constraints"                           │
+  └──────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────┘
+
+  Yeslyf Meeting 06-07-2026 Transcript.docx
+
+  ┌──────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────────────┐
+  │                                                Change                                                │   Timestamp anchor   │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
+  │ Bhuvanaa reads out the full client journey (download → login → video 1 → 3 Qs → sample plan → …)     │ 3:55 – Bhuvanaa      │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
+  │ Harish: "the video that is your going to explain should come before you give the output"             │ 9:15 – Harish Menon  │
+  │                                                                                                          │ Menon            │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┤
+  │ "we should not even say that you will download it... write your email over here, we'll send it to you"   │ 35:31 – Vatsal   │
+  │                                                                                                          │ Parikh           │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┤
+  │ "without names of schemes... it'll just broadly say 5000 rupees for this goal" (Tier 1 vs 2)             │ 58:48 – Vatsal   │
+  │                                                                                                          │ Parikh           │
+
+  Yeslyf Meeting 06-07-2026 Transcript.docx
+
+  ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────────┐
+  │                                                  Change                                                  │ Timestamp anchor │
+
+  ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────────┐
+  │                                                  Change                                                  │ Timestamp anchor │
+  ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────────┐
+  │                                                  Change                                                  │ Timestamp anchor │
+  │                                                  Change                                                  │ Timestamp anchor │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┤
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┤
+  │ Bhuvanaa reads out the full client journey (download → login → video 1 → 3 Qs → sample plan → …)         │ 3:55 – Bhuvanaa  │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┤
+  │ Harish: "the video that is your going to explain should come before you give the output"                 │ 9:15 – Harish    │
+  │ Harish: "the video that is your going to explain should come before you give the output"                 │ 9:15 – Harish    │
+  │                                                                                                          │ Menon            │
+  │ "we should not even say that you will download it... write your email over here, we'll send it to you"   │ 35:31 – Vatsal   │
+  │                                                                                                          │ Parikh           │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┤
+  │ "without names of schemes... it'll just broadly say 5000 rupees for this goal" (Tier 1 vs 2)             │ 58:48 – Vatsal   │
+  │                                                                                                          │ Parikh           │
+  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┤
+  │ Investify/FINVU live demo — single-OTP discovery, "date range one month, valid for 12 months, data       │ 23:36 – Gaurav   │
+  │ storage one month, frequency up to 45 times a month"                                                     │ Kohli            │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────────┘
+
+  Note: these Read AI exports don't carry fixed page numbers (no page breaks in the docx), so timestamps/speaker turns are the
+  reliable anchor for the transcripts, and chapter titles for the summaries — both are Ctrl+F-able in Word.
+
+
+ 1. Explainer moves before the output reveal — Steps 7 (sample plan) and 8 (transition video): added notes that Harish's
+  recommendation was to show the explanatory content before the sample plan/output, not after, to improve interpretation and reduce
+  drop-off.
+  2. Email delivery replaces device download as the primary path — Steps 24, 28, 29: retitled/reframed from "download FP..." to
+  "in-app summary + emailed PDF," per the team's decision to avoid handing users a reason to exit the app.
+  3. New pre-plan / post-plan messaging requirement — Step 22 (full picture, pre-paywall): added the requirement for a contextual
+  post-plan messaging beat (distinct from Step 7's generic pre-plan one), with format (video/image/text) deliberately left open for
+  funnel A/B testing.
+  4. Tier content granularity made explicit — Tier legend + Step 29: Tier 1 = amounts only, no scheme/product names; Tier 2 = named
+  products/allocations; Tier 3 = full-service, candidate for on-platform execution, RIA-fee-vs-distribution-commission model still
+  open.
+  5. Investment Plan must conform to Financial Plan's allocation — Recommendation Engine system card: added as an explicit
+  constraint, since it was only an assumed dependency before.
+  6. AA consent enriched with competitor benchmark (Investify/FINVU demo) — Step 27: single-OTP multi-account discovery, consent
+  parameters (1-month storage, 12-month validity, 45 fetches/month), plus a QA flag on collapsed holdings and risk-profile
+  misclassification observed in the demo.
+  7. Compliance still open — flagged, not resolved — Steps 23 and 27: added "pending Megha/Piali review" notes for whether signing
+  must precede AA data collection and whether FIU/IU licensing is required.
+  8. Direct stocks must not be positioned as superior to mutual funds — Curated product shelf system card: added as a compliance
+  guardrail on recommendation copy.
+  9. Tier-3 billing cadence (quarterly vs. annual) — undecided — Step 23: noted alongside the existing "price TBC" flag, with a lean
+  toward upfront value for a one-time payment.
