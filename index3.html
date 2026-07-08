@@ -507,6 +507,10 @@
  .notearea__save{font-family:"JetBrains Mono";font-size:.64rem;font-weight:700;background:var(--ink);color:var(--yellow);
  border:none;border-radius:6px;padding:6px 12px;cursor:pointer}
  .notearea__save:hover{background:var(--sys)}
+ .notearea__btns{display:flex;gap:6px}
+ .notearea__cancel{font-family:"JetBrains Mono";font-size:.64rem;font-weight:700;background:transparent;color:var(--ink-3);
+ border:1px solid var(--line-2);border-radius:7px;padding:6px 14px;cursor:pointer}
+ .notearea__cancel:hover{color:var(--ink);border-color:var(--ink-3)}
 
  /* ---- flow map ---- */
  .flowmap{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:0 0 34px;scroll-margin-top:74px}
@@ -2079,7 +2083,7 @@ phases.forEach((ph,pi)=>{
  <button class="notebtn" data-noteid="step-${s.n}" onclick="toggleNote(this)"><span class="nb-dot"></span>+ Note</button>
  <div class="notearea" data-noteid="step-${s.n}">
  <textarea placeholder="Write a note for this step..." onkeyup="markUnsaved(this)"></textarea>
- <div class="notearea__meta"><span class="notearea__saved"></span><button class="notearea__save" onclick="saveNote(this)">Save</button></div>
+ <div class="notearea__meta"><span class="notearea__saved"></span><div class="notearea__btns"><button class="notearea__cancel" onclick="cancelNote(this)">Cancel</button><button class="notearea__save" onclick="saveNote(this)">Save</button></div></div>
  </div>
  </div>
  </div></div>`;
@@ -2545,16 +2549,30 @@ async function toggleNote(btn){
  ta.dataset.loaded = '1';
  const savedEl = area.querySelector('.notearea__saved');
  if(ta.value) savedEl.textContent = 'Saved';
- ta.focus();
  }
+ ta.dataset.savedValue = ta.dataset.savedValue ?? ta.value;
+ ta.focus();
  }
 }
 
 function markUnsaved(ta){
  const area = ta.closest('.notearea');
  const savedEl = area.querySelector('.notearea__saved');
- savedEl.textContent = 'Unsaved changes';
+ savedEl.textContent = ta.value === (ta.dataset.savedValue||'') ? (ta.value?'Saved':'') : 'Unsaved changes';
 }
+
+/* Cancel = revert to last-saved text and close, nothing is written */
+function cancelNote(cancelBtn){
+ const area = cancelBtn.closest('.notearea');
+ const ta = area.querySelector('textarea');
+ ta.value = ta.dataset.savedValue || '';
+ area.querySelector('.notearea__saved').textContent = ta.value ? 'Saved' : '';
+ area.classList.remove('open');
+}
+/* Esc inside a note = cancel */
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape' && e.target.matches('.notearea textarea')) cancelNote(e.target);
+});
 
 async function saveNote(saveBtn){
  const area = saveBtn.closest('.notearea');
@@ -2565,6 +2583,7 @@ async function saveNote(saveBtn){
  const ok = await saveNoteValue(id, ta.value);
  const btn = document.querySelector('.notebtn[data-noteid="'+id+'"]');
  if(btn) applyNoteUI(btn, ta.value && ta.value.trim());
+ if(ok) ta.dataset.savedValue = ta.value;
  savedEl.textContent = ok ? 'Saved \u2713' : 'Could not save';
 }
 
@@ -2580,7 +2599,7 @@ function addSectionNoteButtons(){
  area.className = 'wrap';
  area.innerHTML = `<div class="notearea" data-noteid="${id}">
  <textarea placeholder="Write a note for this section..." onkeyup="markUnsaved(this)"></textarea>
- <div class="notearea__meta"><span class="notearea__saved"></span><button class="notearea__save" onclick="saveNote(this)">Save</button></div>
+ <div class="notearea__meta"><span class="notearea__saved"></span><div class="notearea__btns"><button class="notearea__cancel" onclick="cancelNote(this)">Cancel</button><button class="notearea__save" onclick="saveNote(this)">Save</button></div></div>
  </div>`;
  const sectop = sec.querySelector('.sectop');
  if(sectop && sectop.parentElement === sec.querySelector('.wrap')){
