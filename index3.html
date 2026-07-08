@@ -2467,7 +2467,39 @@ document.addEventListener('click',e=>{
  if(e.target.closest('.syschip')||e.target.closest('.codechip'))sysBox.classList.remove('sm--api');
 });
 
-/* ---------- window.storage polyfill (localStorage fallback) ---------- */
+/* ---------- notes storage: Supabase (cross-device shared notepad) with localStorage fallback ---------- */
+/* Table: doc_notes(key text pk, value text, updated_at timestamptz) + anon RLS policy.
+ The anon key is public by design - access control is the RLS policy, not the key. */
+const NOTES_DB = {
+ url:"https://jklaquiusnqrpunkucpm.supabase.co",
+ anon:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImprbGFxdWl1c25xcnB1bmt1Y3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0OTgzNTEsImV4cCI6MjA5OTA3NDM1MX0.-kNGov76nW5MeKHXBEv_JF5Xr95zZqfQVezDRfbyxCs"
+};
+
+if(NOTES_DB.url && NOTES_DB.anon){
+ const H={apikey:NOTES_DB.anon,Authorization:'Bearer '+NOTES_DB.anon,'Content-Type':'application/json'};
+ const rest=NOTES_DB.url.replace(/\/$/,'')+'/rest/v1/doc_notes';
+ window.storage = {
+ get: async function(key){
+  try{
+  const r=await fetch(rest+'?key=eq.'+encodeURIComponent(key)+'&select=value',{headers:H});
+  if(!r.ok) throw 0;
+  const j=await r.json();
+  if(j.length){ try{localStorage.setItem(key,j[0].value);}catch(e){} return {value:j[0].value}; }
+  return null;
+  }catch(e){ try{const v=localStorage.getItem(key);return v!==null?{value:v}:null;}catch(_){return null;} }
+ },
+ set: async function(key,val){
+  try{localStorage.setItem(key,val);}catch(e){}
+  const r=await fetch(rest,{method:'POST',headers:{...H,Prefer:'resolution=merge-duplicates'},
+  body:JSON.stringify({key:key,value:val,updated_at:new Date().toISOString()})});
+  if(!r.ok) throw new Error('supabase save failed');
+ },
+ delete: async function(key){
+  try{localStorage.removeItem(key);}catch(e){}
+  await fetch(rest+'?key=eq.'+encodeURIComponent(key),{method:'DELETE',headers:H});
+ }
+ };
+}
 if(!window.storage){
  window.storage = {
  get: async function(key){ try{ const v=localStorage.getItem(key); return v!==null?{value:v}:null; }catch(e){return null;} },
